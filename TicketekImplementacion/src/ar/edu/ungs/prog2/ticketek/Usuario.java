@@ -1,102 +1,43 @@
+package ar.edu.ungs.prog2.ticketek;
 
 import java.io.*;
 import java.util.*;
-
+import java.util.LinkedList;
 /**
  * 
  */
 public class Usuario {
 
-    /**
-     * Default constructor
-     */
-    public Usuario() {
-    }
-
-    /**
-     * 
-     */
+    
     private String mail;
 
-    /**
-     * 
-     */
     private String contraseña;
 
-    /**
-     * 
-     */
     private String nombre;
 
-    /**
-     * 
-     */
     private String apellido;
+    private LinkedList<String> entradasFechasPasadas;
+    private LinkedList<String> entradasFechasFuturas;
 
-    /**
-     * 
-     */
-    private linkedList<String> entradasFechasPasadas;
-
-    /**
-     * 
-     */
-    private linkedList<String> entradasFechasFuturas;
-
-
-    /**
-     * @param String mail 
-     * @param String  contraseña 
-     * @param String  nombre 
-     * @param String  apellido 
-     * @return
-     */
-    public void Usuario(void String mail, void String  contraseña, void String  nombre, void String  apellido) {
-        // TODO implement here
-        return null;
+    public Usuario( String mail,  String  contraseña,  String  nombre,  String  apellido) {
     }
 
-    /**
-     * @return
-     */
     public LinkedList<String> listarEntradasFuturas() {
-        // TODO implement here
         return null;
     }
 
-    /**
-     * @return
-     */
     public LinkedList<String> listarEntradasCompradas() {
-        // TODO implement here
+        return null;
+    }
+    public Boolean anularEntrada( String codigoEntrada,  String Contraseña) {
         return null;
     }
 
-    /**
-     * @param String codigoEntrada 
-     * @param String Contraseña 
-     * @return
-     */
-    public Boolean anularEntrada(void String codigoEntrada, void String Contraseña) {
-        // TODO implement here
-        return null;
-    }
-
-    /**
-     * @param String codigoEntrada 
-     * @return
-     */
-    public String consultarDatosParaCalcularCosto(void String codigoEntrada) {
-        // TODO implement here
+    public String consultarDatosParaCalcularCosto( String codigoEntrada) {
         return "";
     }
 
-    /**
-     * @param String entrada 
-     * @return
-     */
-    public Void comprarEntrada(void String entrada) {
-        // TODO implement here
+    public Void comprarEntrada(String entrada) {
         return null;
     }
 

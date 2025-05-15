@@ -4,12 +4,12 @@ import java.io.*;
 import java.util.*;
 
 
-public class Entrada {
+public class Entrada implements IEntrada{
 
     private String codigo;
-    private String nombreEspectaculo;
+    private Espectaculo espectaculo;
     private String fecha;
-    private String ubicacion;
+    private Sede ubicacion;
 
 
     public Entrada( String nombreEspectaculo,  Date fecha,  String ubicacion) {
@@ -19,5 +19,21 @@ public class Entrada {
     public void modificarSede(String sedeNueva) {
         
     }
+
+	@Override
+	public double precio() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String ubicacion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public String toString() {
+		return null;
+	}
 
 }

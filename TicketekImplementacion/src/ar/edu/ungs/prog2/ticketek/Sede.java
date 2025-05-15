@@ -10,14 +10,13 @@ public abstract class Sede {
     protected String nombre;
     protected int capacidad;
     protected String direccion;
+    
+    public Sede() {}
 
     public Sede(String nombre, int capacidad, String direccion) {
         
     }
 
-    public Double calcularCostoEntrada() {
-    	
-        return null;
-    }
+    public abstract Double calcularCostoEntrada() ;
 
 }

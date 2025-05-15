@@ -7,41 +7,23 @@ import java.util.*;
  */
 public class Teatro extends Sede {
 
-    /**
-     * Default constructor
-     */
-    public Teatro() {
+       public Teatro() {
+    }
+    private int asientosPorFila;
+
+    private int[] incrementosSector;
+
+    public Teatro(String nombre, int capacidad, String direccion, int[] asientosPorFila) {
     }
 
-    /**
-     * 
-     */
-    private Int asientosPorFila;
-
-    /**
-     * 
-     */
-    private array incrementosSector;
-
-    /**
-     * @param nombre 
-     * @param capacidad 
-     * @param direccion 
-     * @param asientosPorFila 
-     * @return
-     */
-    public Void Teatro(void nombre, void capacidad, void direccion, void asientosPorFila) {
-        // TODO implement here
+    public Double calcularCostoEntrada(int sector) {
         return null;
     }
 
-    /**
-     * @param sector 
-     * @return
-     */
-    public Double calcularCostoEntrada(void sector) {
-        // TODO implement here
-        return null;
-    }
+	@Override
+	public Double calcularCostoEntrada() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

@@ -31,7 +31,7 @@ public class Entrada implements IEntrada{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+	@Override
 	public String toString() {
 		return null;
 	}

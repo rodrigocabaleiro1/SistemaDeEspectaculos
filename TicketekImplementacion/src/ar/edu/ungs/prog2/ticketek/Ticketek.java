@@ -18,14 +18,43 @@ public class Ticketek implements ITicketek{
 
 	@Override
 	public void registrarSede(String nombre, String direccion, int capacidadMaxima) {
-		// TODO Auto-generated method stub
+		if (nombre == null || nombre.isEmpty()) {
+	        throw new IllegalArgumentException("El nombre no puede estar vacío");
+	    }
+		if(direccion == null || direccion.isEmpty()) {
+			throw new IllegalArgumentException("La dirección no puede estar vacía");
+		}
+		if(capacidadMaxima <= 0) {
+			throw new RuntimeException("la capacidad maxima ingresada es invalida");
+		}
+		if (sedes.containsKey(nombre)) {
+			throw new RuntimeException("Ya existe una sede con el nombre ingresado");
+		}
 		
+		Sede nuevaSede = new Estadio(nombre, direccion, capacidadMaxima);
+		sedes.put(nombre, nuevaSede);
 	}
 
 	@Override
 	public void registrarSede(String nombre, String direccion, int capacidadMaxima, int asientosPorFila,
 			String[] sectores, int[] capacidad, int[] porcentajeAdicional) {
-		// TODO Auto-generated method stub
+		
+		if (nombre == null || nombre.isEmpty()) {
+	        throw new IllegalArgumentException("El nombre no puede estar vacío");
+	    }
+		if(direccion == null || direccion.isEmpty()) {
+			throw new IllegalArgumentException("La dirección no puede estar vacía");
+		}
+		if(capacidadMaxima <= 0) {
+			throw new RuntimeException("la capacidad maxima ingresada es invalida");
+		}
+		if (sedes.containsKey(nombre)) {
+			throw new RuntimeException("Ya existe una sede con el nombre ingresado");
+		}
+		
+		Sede nuevaSede = new Teatro(nombre, direccion, capacidadMaxima, asientosPorFila, sectores, capacidad, porcentajeAdicional);
+		sedes.put(nombre, nuevaSede);
+
 		
 	}
 
@@ -33,7 +62,13 @@ public class Ticketek implements ITicketek{
 	public void registrarSede(String nombre, String direccion, int capacidadMaxima, int asientosPorFila,
 			int cantidadPuestos, double precioConsumicion, String[] sectores, int[] capacidad,
 			int[] porcentajeAdicional) {
-		// TODO Auto-generated method stub
+		
+		if (sedes.containsKey(nombre)) {
+			throw new RuntimeException("Ya existe una sede con el nombre ingresado");
+		}
+		
+		Sede nuevaSede = new Teatro(nombre, direccion, capacidadMaxima, asientosPorFila, cantidadPuestos, precioConsumicion, sectores, capacidad, porcentajeAdicional);
+		sedes.put(nombre, nuevaSede);
 		
 	}
 

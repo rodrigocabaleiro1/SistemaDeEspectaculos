@@ -5,14 +5,29 @@ import java.util.*;
 
 public class Miniestadio extends Sede {
 
-    private Double valorConsumisionLibre;
-    public int asientosPorFila;
-    public Double[] incrementosSector;
+    private double precioConsumicion;
+    private int asientosPorFila;
+    private String[] sectores;
+    private int[] porcentajeAdicional;
+    private int[] capacidadSector;
+    private int cantidadPuestos;
 
     
 
-    public Miniestadio (String nombre, int capacidad, String direccion, int asientosPorFila, Double consumisionLibre)
+    public Miniestadio (String nombre, String direccion, int capacidadMaxima, int asientosPorFila,
+			int cantidadPuestos, double precioConsumicion, String[] sectores, int[] capacidad,
+			int[] porcentajeAdicional)
     {
+    	super.nombre = nombre;
+    	super.direccion = direccion;
+    	super.capacidad = capacidadMaxima;
+    	this.asientosPorFila = asientosPorFila;
+    	this.sectores = sectores;
+    	this.capacidadSector = capacidad;
+    	this.porcentajeAdicional = porcentajeAdicional;
+    	this.cantidadPuestos = cantidadPuestos;
+    	this.precioConsumicion = precioConsumicion;
+
     }
 
     public Double calcularCostoEntrada(int sector) {

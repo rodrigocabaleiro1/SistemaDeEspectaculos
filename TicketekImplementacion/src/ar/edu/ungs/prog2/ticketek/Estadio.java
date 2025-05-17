@@ -5,9 +5,14 @@ import java.util.*;
 
 
 public class Estadio extends Sede {
+	private String sector;
 
 
-    public  Estadio(String nombre, int capacidad, String direccion) {
+    public  Estadio(String nombre, String direccion, int capacidad) {
+    	this.sector = "campo";
+    	super.nombre = nombre;
+    	super.direccion = direccion;
+    	super.capacidad = capacidad;
     }
 
 @Override    

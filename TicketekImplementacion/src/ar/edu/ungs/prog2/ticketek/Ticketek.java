@@ -67,15 +67,20 @@ public class Ticketek implements ITicketek{
 			throw new RuntimeException("Ya existe una sede con el nombre ingresado");
 		}
 		
-		Sede nuevaSede = new Teatro(nombre, direccion, capacidadMaxima, asientosPorFila, cantidadPuestos, precioConsumicion, sectores, capacidad, porcentajeAdicional);
+		Sede nuevaSede = new Miniestadio(nombre, direccion, capacidadMaxima, asientosPorFila, cantidadPuestos, precioConsumicion, sectores, capacidad, porcentajeAdicional);
 		sedes.put(nombre, nuevaSede);
 		
 	}
 
 	@Override
 	public void registrarUsuario(String email, String nombre, String apellido, String contrasenia) {
-		// TODO Auto-generated method stub
+		if (usuarios.containsKey(email)) {
+			throw new RuntimeException("Ya existe un usuario registrado con ese mail.");
+		}
 		
+		Usuario usuario = new Usuario(email, nombre, apellido, contrasenia);
+		usuarios.put(email, usuario);
+
 	}
 
 	@Override

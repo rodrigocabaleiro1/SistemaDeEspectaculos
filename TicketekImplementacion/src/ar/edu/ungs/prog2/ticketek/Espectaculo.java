@@ -6,14 +6,16 @@ import java.util.*;
 public class Espectaculo {
 
 
-    private String codigo;
+    //private String codigo;
     private String nombre;
     private HashMap <String,Funcion> funciones;
     private Double precioBase;
     public static Double Recaudacion;
 
 
-
+    public Espectaculo(String nombre) {
+    	this.nombre = nombre;
+    }
     public LinkedList <String> consultarFunciones() {
         return null;
     }

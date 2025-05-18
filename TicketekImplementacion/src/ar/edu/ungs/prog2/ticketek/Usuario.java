@@ -11,7 +11,7 @@ public class Usuario {
     
     private String mail;
 
-    private String contraseña;
+    private String contrasenia;
 
     private String nombre;
 
@@ -19,7 +19,12 @@ public class Usuario {
     private LinkedList<String> entradasFechasPasadas;
     private LinkedList<String> entradasFechasFuturas;
 
-    public Usuario( String mail,  String  contraseña,  String  nombre,  String  apellido) {
+    public Usuario( String mail, String  nombre,  String  apellido, String contrasenia) {
+    	
+    	this.mail = mail;
+    	this.contrasenia = contrasenia;
+    	this.nombre = nombre;
+    	this.apellido = apellido;
     }
 
     public LinkedList<String> listarEntradasFuturas() {

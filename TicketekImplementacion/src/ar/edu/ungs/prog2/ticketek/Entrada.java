@@ -6,6 +6,7 @@ import java.util.*;
 
 public class Entrada implements IEntrada{
 
+    private static int codigoGlobal;
     private String codigo;
     private Espectaculo espectaculo;
     private String fecha;
@@ -87,6 +88,10 @@ public class Entrada implements IEntrada{
 		return indice;
 	}
 	//------------------------------------------------------------------------
+	public String consultarCodigo() {
+		
+		return this.codigo;
+	}
 	
 	
 

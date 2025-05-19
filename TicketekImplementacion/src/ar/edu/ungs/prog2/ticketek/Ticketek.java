@@ -11,7 +11,7 @@ public class Ticketek implements ITicketek{
     private HashMap <String, Usuario> usuarios;
     private HashMap <String, Espectaculo> espectaculos;
     private HashMap <String, Sede> sedes;
-    private HashMap <String, Entrada> entradasVendidas;
+    private HashMap <Integer, Entrada> entradasVendidas;
 
     public Ticketek() {
     }
@@ -112,15 +112,25 @@ public class Ticketek implements ITicketek{
 	@Override
 	public List<IEntrada> venderEntrada(String nombreEspectaculo, String fecha, String email, String contrasenia,
 			int cantidadEntradas) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<IEntrada> entradas = new LinkedList<IEntrada>();
+		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
+		Usuario usuario = usuarios.get(email);
+		for(int i = 0; i<cantidadEntradas;i++) {
+			Sede sede = this.sedes.get(espectaculo.consultarSede(fecha));
+			Entrada entrada = new Entrada(espectaculo, fecha, sede);
+			entradas.add(entrada);
+			usuario.comprarEntrada(entrada.consultarCodigo());
+		}
+		return entradas;
 	}
 
 	@Override
 	public List<IEntrada> venderEntrada(String nombreEspectaculo, String fecha, String email, String contrasenia,
 			String sector, int[] asientos) {
 		// TODO Auto-generated method stub
-		return null;
+		List<IEntrada> entradas = new LinkedList<IEntrada>();
+		return entradas;
 	}
 
 	@Override

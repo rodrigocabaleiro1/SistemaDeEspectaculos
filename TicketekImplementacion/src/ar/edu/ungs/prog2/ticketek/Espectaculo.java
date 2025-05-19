@@ -31,5 +31,10 @@ public class Espectaculo {
 		funciones.put(fecha, nuevaFuncion);
 		this.precioBase = precioBase; //preguntar si el precio base esta en funcion o espectaculo
 	}
+	public String consultarSede(String fecha) {
+		String sede = this.funciones.get(fecha).consultarSede();
+		
+		return sede;
+	}
 
 }

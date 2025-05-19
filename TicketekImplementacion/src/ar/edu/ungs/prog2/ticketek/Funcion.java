@@ -13,6 +13,12 @@ public class Funcion {
     //private Date fecha;
 
     public  Funcion(String sede, String fecha) {
+    	this.sede = sede;
+    	this.fecha = fecha;
     }
+
+	public String consultarSede() {
+		return this.sede;
+	}
 
 }

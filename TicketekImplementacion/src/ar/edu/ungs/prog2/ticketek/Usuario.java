@@ -16,8 +16,8 @@ public class Usuario {
     private String nombre;
 
     private String apellido;
-    private LinkedList<String> entradasFechasPasadas;
-    private LinkedList<String> entradasFechasFuturas;
+    private LinkedList<Integer> entradasFechasPasadas;
+    private LinkedList<Integer> entradasFechasFuturas;
 
     public Usuario( String mail, String  nombre,  String  apellido, String contrasenia) {
     	
@@ -42,8 +42,8 @@ public class Usuario {
         return "";
     }
 
-    public Void comprarEntrada(String entrada) {
-        return null;
+    public void comprarEntrada(String codigoEntrada) {
+        
     }
 
 }

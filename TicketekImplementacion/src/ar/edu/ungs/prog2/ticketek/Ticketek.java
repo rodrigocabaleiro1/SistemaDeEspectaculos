@@ -85,7 +85,12 @@ public class Ticketek implements ITicketek{
 
 	@Override
 	public void registrarEspectaculo(String nombre) {
-		// TODO Auto-generated method stub
+		if (sedes.containsKey(nombre)) {
+			throw new RuntimeException("Ya existe un Espectaculo con el nombre ingresado");
+		}
+		
+		Espectaculo espectaculo = new Espectaculo(nombre);
+		espectaculos.put(nombre, espectaculo);
 		
 	}
 

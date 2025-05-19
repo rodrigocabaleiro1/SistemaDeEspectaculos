@@ -46,4 +46,8 @@ public class Usuario {
         
     }
 
+	public boolean iniciarSesion(String contrasenia) {
+		return this.contrasenia == contrasenia;
+	}
+
 }

@@ -112,11 +112,27 @@ public class Ticketek implements ITicketek{
 	@Override
 	public List<IEntrada> venderEntrada(String nombreEspectaculo, String fecha, String email, String contrasenia,
 			int cantidadEntradas) {
+		if (!this.usuarios.containsKey(email)) {
+			throw new RuntimeException("NO existe un usuario registrado con ese mail.");
+		}if (!this.espectaculos.containsKey(nombreEspectaculo)) {
+			throw new RuntimeException("NO existe el espectaculo ingresado");
+		}if (this.espectaculos.get(nombreEspectaculo).fechaLibre(fecha)) {
+			throw new RuntimeException("NO hay una funcion en la fecha ingresada");
+		}
+		if(this.usuarios.get(email).iniciarSesion(contrasenia)) {
+			throw new RuntimeException("¡Contraseña INVALIDA!");
+		}
+
 		
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
 		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
 		Usuario usuario = usuarios.get(email);
+		if(plazasDisponibles()) - cantidadEntradas >= 0 {
+			throw new RuntimeException("¡Ya no hay Plazas Disponibles en esta función!");
+		}
+		
 		for(int i = 0; i<cantidadEntradas;i++) {
+			
 			Sede sede = this.sedes.get(espectaculo.consultarSede(fecha));
 			Entrada entrada = new Entrada(espectaculo, fecha, sede);
 			entradas.add(entrada);

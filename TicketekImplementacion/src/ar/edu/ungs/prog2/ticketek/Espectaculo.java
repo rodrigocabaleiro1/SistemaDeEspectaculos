@@ -9,8 +9,9 @@ public class Espectaculo {
     //private String codigo;
     private String nombre;
     private HashMap <String,Funcion> funciones;
-    private Double precioBase;
-    public static Double Recaudacion;
+    private double precioBase;
+    private HashMap<String, Double> RecaudacionPorSede; //se nos solicita en O(1)
+    private Double recaudacion; //se nos solicita en O(1)
 
 
     public Espectaculo(String nombre) {
@@ -21,7 +22,14 @@ public class Espectaculo {
     }
 
     public Double consultarPrecioBase() {
-        return null;
+        return precioBase;
     }
+	public boolean fechaLibre(String fecha) {
+		return !funciones.containsKey(fecha);
+		}
+	public void agregarFuncion(Funcion nuevaFuncion, String fecha, double precioBase) {
+		funciones.put(fecha, nuevaFuncion);
+		this.precioBase = precioBase; //preguntar si el precio base esta en funcion o espectaculo
+	}
 
 }

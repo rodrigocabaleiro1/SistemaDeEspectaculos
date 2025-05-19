@@ -39,5 +39,17 @@ public class Miniestadio extends Sede {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public int obtenerIncrementoSector(int indice) {
+		return this.porcentajeAdicional[indice];
+	}
+
+	public double obtenerPrecioConsumision() {
+		// TODO Auto-generated method stub
+		return this.precioConsumicion;
+	}
+	public String consultarSector(int x) {
+		return sectores[x];
+	}
 
 }

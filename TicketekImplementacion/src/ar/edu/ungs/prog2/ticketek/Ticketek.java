@@ -85,7 +85,7 @@ public class Ticketek implements ITicketek{
 
 	@Override
 	public void registrarEspectaculo(String nombre) {
-		if (sedes.containsKey(nombre)) {
+		if (espectaculos.containsKey(nombre)) {
 			throw new RuntimeException("Ya existe un Espectaculo con el nombre ingresado");
 		}
 		
@@ -96,8 +96,17 @@ public class Ticketek implements ITicketek{
 
 	@Override
 	public void agregarFuncion(String nombreEspectaculo, String fecha, String sede, double precioBase) {
-		// TODO Auto-generated method stub
+		if (espectaculos.containsKey(nombreEspectaculo)) {
+			throw new RuntimeException("¡El Espectaculo ingresado no esta registrado!");
+		} if (sedes.containsKey(sede)) {
+			throw new RuntimeException("¡La Sede ingresada no esta registrada!");
+		}if (!espectaculos.get(nombreEspectaculo).fechaLibre(fecha)) {
+			throw new RuntimeException("¡Ya se realiza una funcion en la fecha ingresada!");
+		}
 		
+		Funcion nuevaFuncion = new Funcion(sede, fecha);
+
+		espectaculos.get(nombreEspectaculo).agregarFuncion(nuevaFuncion, fecha, precioBase);
 	}
 
 	@Override

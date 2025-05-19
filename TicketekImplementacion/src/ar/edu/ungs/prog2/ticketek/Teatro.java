@@ -1,3 +1,4 @@
+package ar.edu.ungs.prog2.ticketek;
 
 import java.io.*;
 import java.util.*;
@@ -34,5 +35,17 @@ public class Teatro extends Sede {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public int obtenerIncrementoSector(int indice) {
+		return this.porcentajeAdicional[indice];
+	}
+
+	public String consultarSector(int x) {
+		return sectores[x];
+	}
+
+	
+
+	
 
 }

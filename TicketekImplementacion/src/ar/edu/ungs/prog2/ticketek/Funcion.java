@@ -9,9 +9,10 @@ import java.util.*;
 public class Funcion {
 
     private String sede;
-    private Date fecha;
+    private String fecha;
+    //private Date fecha;
 
-    public  Funcion(String sede, Date fecha) {
+    public  Funcion(String sede, String fecha) {
     }
 
 }

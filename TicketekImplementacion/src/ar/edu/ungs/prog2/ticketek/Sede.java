@@ -18,6 +18,8 @@ public abstract class Sede {
     }
 
     public abstract Double calcularCostoEntrada() ;
+
+	public abstract int consultarCapacidad();
     
 
 }

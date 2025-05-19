@@ -11,6 +11,7 @@ public class Funcion {
     private String sede;
     private String fecha;
     //private Date fecha;
+    private int entradasVendidas; //Es un contador
 
     public  Funcion(String sede, String fecha) {
     	this.sede = sede;
@@ -19,6 +20,13 @@ public class Funcion {
 
 	public String consultarSede() {
 		return this.sede;
+	}
+	
+	public int consultarEntradasVendidas(){
+		return this.entradasVendidas;
+	}
+	public void venderEntrada() {
+		entradasVendidas ++;
 	}
 
 }

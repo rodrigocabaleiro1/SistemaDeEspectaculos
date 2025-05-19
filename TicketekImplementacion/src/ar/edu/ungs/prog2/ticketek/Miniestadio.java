@@ -51,5 +51,9 @@ public class Miniestadio extends Sede {
 	public String consultarSector(int x) {
 		return sectores[x];
 	}
+	public int consultarCapacidad() {
+		// TODO Auto-generated method stub
+		return capacidadSector[0]+capacidadSector[1]+capacidadSector[2]+capacidadSector[4];
+	}
 
 }

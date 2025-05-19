@@ -19,5 +19,9 @@ public class Estadio extends Sede {
     public Double calcularCostoEntrada() {
         return null;
     }
+	public int consultarCapacidad() {
+	// TODO Auto-generated method stub
+	return capacidad;
+}
 
 }

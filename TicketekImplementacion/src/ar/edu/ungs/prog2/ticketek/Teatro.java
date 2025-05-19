@@ -44,6 +44,12 @@ public class Teatro extends Sede {
 		return sectores[x];
 	}
 
+	@Override
+	public int consultarCapacidad() {
+		// TODO Auto-generated method stub
+		return capacidadSector[0]+capacidadSector[1]+capacidadSector[2]+capacidadSector[4];
+	}
+
 	
 
 	

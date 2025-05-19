@@ -127,8 +127,8 @@ public class Ticketek implements ITicketek{
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
 		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
 		Usuario usuario = usuarios.get(email);
-		if(plazasDisponibles()) - cantidadEntradas >= 0 {
-			throw new RuntimeException("¡Ya no hay Plazas Disponibles en esta función!");
+		if(plazasDisponibles(espectaculo, fecha) - cantidadEntradas >= 0) {
+			throw new RuntimeException("¡No hay suficientes Plazas Disponibles en esta función!");
 		}
 		
 		for(int i = 0; i<cantidadEntradas;i++) {
@@ -215,5 +215,10 @@ public class Ticketek implements ITicketek{
 		return 0;
 	}
 
-    
+    private int plazasDisponibles(Espectaculo espectaculo, String fecha) {
+    	String sede = espectaculo.consultarSede(fecha);
+    	int capacidad = this.sedes.get(sede).consultarCapacidad();
+    	int ocupados = espectaculo.consultarVentasFuncion(fecha);
+    	return capacidad - ocupados;
+    }
 }

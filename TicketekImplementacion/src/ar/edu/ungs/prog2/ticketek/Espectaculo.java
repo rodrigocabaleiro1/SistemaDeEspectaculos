@@ -36,5 +36,9 @@ public class Espectaculo {
 		
 		return sede;
 	}
+	public int consultarVentasFuncion(String fecha) {
+		
+		return this.funciones.get(fecha).consultarEntradasVendidas();
+	}
 
 }

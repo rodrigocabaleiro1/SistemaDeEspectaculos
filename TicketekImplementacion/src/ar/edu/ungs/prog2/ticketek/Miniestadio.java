@@ -30,6 +30,10 @@ public class Miniestadio extends Sede {
 
     }
 
+	public String[] getSectores() {
+    return this.sectores;
+}
+
     public Double calcularCostoEntrada(int sector) {
         return null;
     }

@@ -17,9 +17,9 @@ public class Espectaculo {
     public Espectaculo(String nombre) {
     	this.nombre = nombre;
     }
-    public LinkedList <String> consultarFunciones() {
-        return null;
-    }
+	public LinkedList<String> consultarFunciones() {
+		return new LinkedList<>(funciones.keySet());
+	}
 
     public Double consultarPrecioBase() {
         return precioBase;
@@ -40,5 +40,13 @@ public class Espectaculo {
 		
 		return this.funciones.get(fecha).consultarEntradasVendidas();
 	}
+
+	public Funcion consultarFuncion(String fecha) {
+    if (this.funciones != null && this.funciones.containsKey(fecha)) {
+        return this.funciones.get(fecha);
+    }
+    throw new RuntimeException("No existe una función para la fecha especificada: " + fecha);
+}
+	
 
 }

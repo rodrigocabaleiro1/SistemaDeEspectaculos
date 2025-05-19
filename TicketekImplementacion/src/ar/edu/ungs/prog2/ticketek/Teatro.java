@@ -26,6 +26,10 @@ public class Teatro extends Sede {
     	this.porcentajeAdicional = porcentajeAdicional;
     }
 
+	    public String[] getSectores() {
+        return this.sectores;
+    }
+
     public Double calcularCostoEntrada(int sector) {
         return null;
     }

@@ -1,11 +1,6 @@
 package ar.edu.ungs.prog2.ticketek;
 
-import java.io.*;
-import java.util.*;
-
 public abstract class Sede {
-
-
 
     protected String nombre;
     protected int capacidad;
@@ -14,12 +9,11 @@ public abstract class Sede {
     public Sede() {}
 
     public Sede(String nombre, int capacidad, String direccion) {
-        
+        this.nombre = nombre;
+        this.capacidad = capacidad;
+        this.direccion = direccion;
     }
 
-    public abstract Double calcularCostoEntrada() ;
-
-	public abstract int consultarCapacidad();
-    
-
+    public abstract Double calcularCostoEntrada();
+    public abstract int consultarCapacidad();
 }

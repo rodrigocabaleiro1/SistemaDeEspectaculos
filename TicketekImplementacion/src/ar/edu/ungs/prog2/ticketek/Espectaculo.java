@@ -10,13 +10,17 @@ public class Espectaculo {
     private String nombre;
     private HashMap <String,Funcion> funciones;
     private double precioBase;
-    private HashMap<String, Double> RecaudacionPorSede; //se nos solicita en O(1)
+    private HashMap<String, Double> recaudacionPorSede; //se nos solicita en O(1)
     private Double recaudacion; //se nos solicita en O(1)
 
 // METODOS ----------------------------------------------
     
     public Espectaculo(String nombre) {
     	this.nombre = nombre;
+    	this.funciones = new HashMap<>();
+    	this.precioBase = 0;
+    	this.recaudacionPorSede = new HashMap<>();
+    	this.recaudacion = 0.0;
     }
 	public LinkedList<String> consultarFunciones() {
 		return new LinkedList<>(funciones.keySet());
@@ -43,16 +47,19 @@ public class Espectaculo {
 	}
 
 	public Funcion consultarFuncion(String fecha) {
-    if (this.funciones != null && this.funciones.containsKey(fecha)) {
-        return this.funciones.get(fecha);
-    }
-    throw new RuntimeException("No existe una función para la fecha especificada: " + fecha);
+		existeFuncion(fecha);
+        return this.funciones.get(fecha);    
 }
 	public void existeFuncion(String fecha) {
 		if(!funciones.containsKey(fecha)) {
 			throw new RuntimeException("No hay una funcion en la fecha ingresada.");
 		}	
 	}
+	/*public void mapNull(HashMap <String, Funcion> map) throws RuntimeException{
+		if(map == null) {
+			throw new RuntimeException("No hay funciones");
+		}
+	}*/
 	
 
 }

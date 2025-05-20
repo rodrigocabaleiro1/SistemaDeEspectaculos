@@ -27,13 +27,13 @@ public class Ticketek implements ITicketek {
 		if (capacidadMaxima <= 0) {
 			throw new RuntimeException("la capacidad maxima ingresada es invalida");
 		}
-		if (sedes.containsKey(nombre)) {
-			throw new RuntimeException("Ya existe una sede con el nombre ingresado");
-		}
+		yaExiteSede(nombre);
 
 		Sede nuevaSede = new Estadio(nombre, direccion, capacidadMaxima);
 		sedes.put(nombre, nuevaSede);
 	}
+
+	
 
 	@Override
 	public void registrarSede(String nombre, String direccion, int capacidadMaxima, int asientosPorFila,
@@ -48,9 +48,7 @@ public class Ticketek implements ITicketek {
 		if (capacidadMaxima <= 0) {
 			throw new RuntimeException("la capacidad maxima ingresada es invalida");
 		}
-		if (sedes.containsKey(nombre)) {
-			throw new RuntimeException("Ya existe una sede con el nombre ingresado");
-		}
+		yaExiteSede(nombre);
 
 		Sede nuevaSede = new Teatro(nombre, direccion, capacidadMaxima, asientosPorFila, sectores, capacidad,
 				porcentajeAdicional);
@@ -63,46 +61,38 @@ public class Ticketek implements ITicketek {
 			int cantidadPuestos, double precioConsumicion, String[] sectores, int[] capacidad,
 			int[] porcentajeAdicional) {
 
-		if (sedes.containsKey(nombre)) {
-			throw new RuntimeException("Ya existe una sede con el nombre ingresado");
-		}
-
+		yaExiteSede(nombre);
+		
 		Sede nuevaSede = new Miniestadio(nombre, direccion, capacidadMaxima, asientosPorFila, cantidadPuestos,
 				precioConsumicion, sectores, capacidad, porcentajeAdicional);
 		sedes.put(nombre, nuevaSede);
-
 	}
 
 	@Override
 	public void registrarUsuario(String email, String nombre, String apellido, String contrasenia) {
-		if (usuarios.containsKey(email)) {
-			throw new RuntimeException("Ya existe un usuario registrado con ese mail.");
-		}
+		
+		yaExisteUsuario(email);
 
 		Usuario usuario = new Usuario(email, nombre, apellido, contrasenia);
 		usuarios.put(email, usuario);
-
 	}
+
 
 	@Override
 	public void registrarEspectaculo(String nombre) {
-		if (espectaculos.containsKey(nombre)) {
-			throw new RuntimeException("Ya existe un Espectaculo con el nombre ingresado");
-		}
+		yaExisteEspectaculo(nombre);
 
 		Espectaculo espectaculo = new Espectaculo(nombre);
 		espectaculos.put(nombre, espectaculo);
 
 	}
 
+	
+
 	@Override
 	public void agregarFuncion(String nombreEspectaculo, String fecha, String sede, double precioBase) {
-		if (espectaculos.containsKey(nombreEspectaculo)) {
-			throw new RuntimeException("¡El Espectaculo ingresado no esta registrado!");
-		}
-		if (sedes.containsKey(sede)) {
-			throw new RuntimeException("¡La Sede ingresada no esta registrada!");
-		}
+		espectaculoNoRegistrado(nombreEspectaculo);
+		sedeNoRegistrada(sede);
 		if (!espectaculos.get(nombreEspectaculo).fechaLibre(fecha)) {
 			throw new RuntimeException("¡Ya se realiza una funcion en la fecha ingresada!");
 		}
@@ -112,15 +102,13 @@ public class Ticketek implements ITicketek {
 		espectaculos.get(nombreEspectaculo).agregarFuncion(nuevaFuncion, fecha, precioBase);
 	}
 
+	
+
 	@Override
 	public List<IEntrada> venderEntrada(String nombreEspectaculo, String fecha, String email, String contrasenia,
 			int cantidadEntradas) {
-		if (!this.usuarios.containsKey(email)) {
-			throw new RuntimeException("NO existe un usuario registrado con ese mail.");
-		}
-		if (!this.espectaculos.containsKey(nombreEspectaculo)) {
-			throw new RuntimeException("NO existe el espectaculo ingresado");
-		}
+		usuarioNoRegistrado(email);
+		espectaculoNoRegistrado(nombreEspectaculo);
 		if (this.espectaculos.get(nombreEspectaculo).fechaLibre(fecha)) {
 			throw new RuntimeException("NO hay una funcion en la fecha ingresada");
 		}
@@ -145,6 +133,10 @@ public class Ticketek implements ITicketek {
 		return entradas;
 	}
 
+	private void usuarioNoRegistrado(String email) throws RuntimeException {
+		
+	}
+
 	@Override
 	public List<IEntrada> venderEntrada(String nombreEspectaculo, String fecha, String email, String contrasenia,
 			String sector, int[] asientos) {
@@ -155,9 +147,7 @@ public class Ticketek implements ITicketek {
 
 	@Override
 	public String listarFunciones(String nombreEspectaculo) {
-		if (!espectaculos.containsKey(nombreEspectaculo)) {
-			throw new RuntimeException("El espectáculo no está registrado.");
-		}
+		espectaculoNoRegistrado(nombreEspectaculo);
 		Espectaculo espectaculo = espectaculos.get(nombreEspectaculo);
 		// Suponiendo que Espectaculo tiene un método consultarFunciones() que devuelve
 		// LinkedList<String> con las fechas
@@ -258,11 +248,47 @@ public class Ticketek implements ITicketek {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
+	
+	//-------------------------------------------------------------------------------
+	//METODOS AUXILIARES
+	//-------------------------------------------------------------------------------
 	private int plazasDisponibles(Espectaculo espectaculo, String fecha) {
 		String sede = espectaculo.consultarSede(fecha);
 		int capacidad = this.sedes.get(sede).consultarCapacidad();
 		int ocupados = espectaculo.consultarVentasFuncion(fecha);
 		return capacidad - ocupados;
+	}
+	
+	//-------------------------------------------------------------------------------
+	//COMPROBAR EXISTENCIA DE DATOS
+	//-------------------------------------------------------------------------------
+	private void yaExisteUsuario(String email) throws RuntimeException {
+		if (this.usuarios.containsKey(email)) {
+			throw new RuntimeException("Ya existe un usuario registrado con ese mail.");
+		}
+	}
+	
+	private void yaExiteSede(String nombre) throws RuntimeException {
+		if (sedes.containsKey(nombre)) {
+			throw new RuntimeException("Ya existe una sede con el nombre ingresado");
+		}
+	}
+	
+	private void yaExisteEspectaculo(String nombre) throws RuntimeException {
+		if (espectaculos.containsKey(nombre)) {
+			throw new RuntimeException("Ya existe un Espectaculo con el nombre ingresado");
+		}
+	}
+	
+	private void sedeNoRegistrada(String sede) throws RuntimeException {
+		if (sedes.containsKey(sede)) {
+			throw new RuntimeException("¡La Sede ingresada no esta registrada!");
+		}
+	}
+
+	private void espectaculoNoRegistrado(String nombreEspectaculo) throws RuntimeException {
+		if (espectaculos.containsKey(nombreEspectaculo)) {
+			throw new RuntimeException("¡El Espectaculo ingresado no esta registrado!");
+		}
 	}
 }

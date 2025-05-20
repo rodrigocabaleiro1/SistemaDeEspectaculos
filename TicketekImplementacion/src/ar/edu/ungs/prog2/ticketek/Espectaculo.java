@@ -13,7 +13,8 @@ public class Espectaculo {
     private HashMap<String, Double> RecaudacionPorSede; //se nos solicita en O(1)
     private Double recaudacion; //se nos solicita en O(1)
 
-
+// METODOS ----------------------------------------------
+    
     public Espectaculo(String nombre) {
     	this.nombre = nombre;
     }
@@ -37,7 +38,7 @@ public class Espectaculo {
 		return sede;
 	}
 	public int consultarVentasFuncion(String fecha) {
-		
+		existeFuncion(fecha); //Si no existe lanza Excepcion
 		return this.funciones.get(fecha).consultarEntradasVendidas();
 	}
 
@@ -47,6 +48,11 @@ public class Espectaculo {
     }
     throw new RuntimeException("No existe una función para la fecha especificada: " + fecha);
 }
+	public void existeFuncion(String fecha) {
+		if(!funciones.containsKey(fecha)) {
+			throw new RuntimeException("No hay una funcion en la fecha ingresada.");
+		}	
+	}
 	
 
 }

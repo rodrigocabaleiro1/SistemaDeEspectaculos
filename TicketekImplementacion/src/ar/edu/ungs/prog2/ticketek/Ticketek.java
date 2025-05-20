@@ -72,7 +72,6 @@ public class Ticketek implements ITicketek {
 	public void registrarUsuario(String email, String nombre, String apellido, String contrasenia) {
 		
 		yaExisteUsuario(email);
-
 		Usuario usuario = new Usuario(email, nombre, apellido, contrasenia);
 		usuarios.put(email, usuario);
 	}
@@ -93,9 +92,7 @@ public class Ticketek implements ITicketek {
 	public void agregarFuncion(String nombreEspectaculo, String fecha, String sede, double precioBase) {
 		espectaculoNoRegistrado(nombreEspectaculo);
 		sedeNoRegistrada(sede);
-		if (!espectaculos.get(nombreEspectaculo).fechaLibre(fecha)) {
-			throw new RuntimeException("¡Ya se realiza una funcion en la fecha ingresada!");
-		}
+		yaSeRealizaFuncionEnFecha(nombreEspectaculo, fecha);
 
 		Funcion nuevaFuncion = new Funcion(sede, fecha);
 
@@ -104,17 +101,15 @@ public class Ticketek implements ITicketek {
 
 	
 
+	
+
 	@Override
 	public List<IEntrada> venderEntrada(String nombreEspectaculo, String fecha, String email, String contrasenia,
 			int cantidadEntradas) {
-		usuarioNoRegistrado(email);
+		
 		espectaculoNoRegistrado(nombreEspectaculo);
-		if (this.espectaculos.get(nombreEspectaculo).fechaLibre(fecha)) {
-			throw new RuntimeException("NO hay una funcion en la fecha ingresada");
-		}
-		if (this.usuarios.get(email).iniciarSesion(contrasenia)) {
-			throw new RuntimeException("¡Contraseña INVALIDA!");
-		}
+		noHayFuncionEnFecha(nombreEspectaculo, fecha);
+		iniciarSesionUsuario(email, contrasenia);
 
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
 		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
@@ -133,7 +128,6 @@ public class Ticketek implements ITicketek {
 		return entradas;
 	}
 
-	
 
 	@Override
 	public List<IEntrada> venderEntrada(String nombreEspectaculo, String fecha, String email, String contrasenia,
@@ -267,31 +261,49 @@ public class Ticketek implements ITicketek {
 	}
 	
 	private void yaExiteSede(String nombre) throws RuntimeException {
-		if (sedes.containsKey(nombre)) {
+		if (this.sedes.containsKey(nombre)) {
 			throw new RuntimeException("Ya existe una sede con el nombre ingresado");
 		}
 	}
 	
 	private void yaExisteEspectaculo(String nombre) throws RuntimeException {
-		if (espectaculos.containsKey(nombre)) {
+		if (this.espectaculos.containsKey(nombre)) {
 			throw new RuntimeException("Ya existe un Espectaculo con el nombre ingresado");
 		}
 	}
 	
 	private void sedeNoRegistrada(String sede) throws RuntimeException {
-		if (sedes.containsKey(sede)) {
+		if (this.sedes.containsKey(sede)) {
 			throw new RuntimeException("¡La Sede ingresada no esta registrada!");
 		}
 	}
 
 	private void espectaculoNoRegistrado(String nombreEspectaculo) throws RuntimeException {
-		if (espectaculos.containsKey(nombreEspectaculo)) {
+		if (this.espectaculos.containsKey(nombreEspectaculo)) {
 			throw new RuntimeException("¡El Espectaculo ingresado no esta registrado!");
 		}
 	}
 	private void usuarioNoRegistrado(String email) throws RuntimeException {
 		if (!this.usuarios.containsKey(email)) {
 			throw new RuntimeException("NO existe un usuario registrado con ese mail.");
+		}
+	}
+	
+	private void iniciarSesionUsuario(String email, String contrasenia) throws RuntimeException {
+		usuarioNoRegistrado(email);
+		if (this.usuarios.get(email).iniciarSesion(contrasenia)) {
+			throw new RuntimeException("¡Contraseña INVALIDA!");
+		}
+	}
+	
+	private void noHayFuncionEnFecha(String nombreEspectaculo, String fecha) throws RuntimeException {
+		if (this.espectaculos.get(nombreEspectaculo).fechaLibre(fecha)) {
+			throw new RuntimeException("NO hay una funcion en la fecha ingresada");
+		}
+	}
+	private void yaSeRealizaFuncionEnFecha(String nombreEspectaculo, String fecha) throws RuntimeException {
+		if (!espectaculos.get(nombreEspectaculo).fechaLibre(fecha)) {
+			throw new RuntimeException("¡Ya se realiza una funcion en la fecha ingresada!");
 		}
 	}
 }

@@ -133,9 +133,7 @@ public class Ticketek implements ITicketek {
 		return entradas;
 	}
 
-	private void usuarioNoRegistrado(String email) throws RuntimeException {
-		
-	}
+	
 
 	@Override
 	public List<IEntrada> venderEntrada(String nombreEspectaculo, String fecha, String email, String contrasenia,
@@ -289,6 +287,11 @@ public class Ticketek implements ITicketek {
 	private void espectaculoNoRegistrado(String nombreEspectaculo) throws RuntimeException {
 		if (espectaculos.containsKey(nombreEspectaculo)) {
 			throw new RuntimeException("¡El Espectaculo ingresado no esta registrado!");
+		}
+	}
+	private void usuarioNoRegistrado(String email) throws RuntimeException {
+		if (!this.usuarios.containsKey(email)) {
+			throw new RuntimeException("NO existe un usuario registrado con ese mail.");
 		}
 	}
 }

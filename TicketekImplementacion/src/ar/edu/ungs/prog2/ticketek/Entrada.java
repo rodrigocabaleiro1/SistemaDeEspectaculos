@@ -1,5 +1,6 @@
 package ar.edu.ungs.prog2.ticketek;
 
+import java.awt.Point;
 import java.io.*;
 import java.util.*;
 
@@ -11,6 +12,7 @@ public class Entrada implements IEntrada {
 	private String fecha;
 	private Sede ubicacion;
 	private String sector;
+	private Point filaAsiento;
 
 	public Entrada(Espectaculo espectaculo, String fecha, Sede ubicacion) {
 		this.espectaculo = espectaculo;
@@ -20,16 +22,20 @@ public class Entrada implements IEntrada {
 		this.codigo = String.valueOf(++codigoGlobal);
 	}
 
-	public Entrada(Espectaculo espectaculo, String fecha, Sede ubicacion, String sector) {
+	public Entrada(Espectaculo espectaculo, String fecha, Sede ubicacion, String sector, Point filaAsiento) {
 		this.espectaculo = espectaculo;
 		this.fecha = fecha;
 		this.ubicacion = ubicacion;
 		this.sector = sector;
 		this.codigo = String.valueOf(++codigoGlobal);
+		this.filaAsiento = filaAsiento;
 	}
 
 	public void modificarSede(Sede sedeNueva) {
-
+		if (sedeNueva== null) {
+			throw new RuntimeException("NO ha ingresado la sede nueva.");
+		}
+		this.ubicacion = sedeNueva;
 	}
 
 	@Override
@@ -71,13 +77,12 @@ public class Entrada implements IEntrada {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Entrada [");
-		sb.append("Código: ").append(codigo);
-		sb.append(", Espectáculo: ").append(espectaculo != null ? espectaculo.consultarNombre() : "N/A");
-		sb.append(", Fecha: ").append(fecha);
-		sb.append(", Ubicación: ").append(ubicacion != null ? ubicacion.getNombre() : "N/A");
-		sb.append(", Sector: ").append(sector != null ? sector : "General");
-		sb.append("]");
+		sb.append("{").append(codigo);
+		sb.append("} - {").append(espectaculo != null ? espectaculo.consultarNombre() : "N/A");
+		sb.append("} - {").append(fecha);
+		sb.append("} - {").append(ubicacion != null ? ubicacion.getNombre() : "N/A");
+		sb.append("} - {").append(sector != null ? sector : "General");
+		sb.append("}");
 		return sb.toString();
 	}
 

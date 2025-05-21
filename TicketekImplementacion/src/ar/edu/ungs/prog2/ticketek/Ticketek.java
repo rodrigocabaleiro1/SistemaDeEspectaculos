@@ -128,7 +128,13 @@ public class Ticketek implements ITicketek {
 	public List<IEntrada> venderEntrada(String nombreEspectaculo, String fecha, String email, String contrasenia,
 			String sector, int[] asientos) {
 		// TODO Auto-generated method stub
+		espectaculoNoRegistrado(nombreEspectaculo);
+		noHayFuncionEnFecha(nombreEspectaculo, fecha);
+		iniciarSesionUsuario(email, contrasenia);
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
+		
+		
+		
 		return entradas;
 	}
 

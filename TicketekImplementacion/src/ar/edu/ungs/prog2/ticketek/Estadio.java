@@ -25,7 +25,8 @@ public class Estadio extends Sede {
         return capacidad;
     }
 
-    // Getter y setter por si querés cambiar o consultar el sector
+
+    // métodos adicionales para manejar el sector
     public String getSector() {
         return sector;
     }

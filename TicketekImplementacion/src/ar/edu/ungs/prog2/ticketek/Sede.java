@@ -5,8 +5,9 @@ public abstract class Sede {
     protected String nombre;
     protected int capacidad;
     protected String direccion;
-    
-    public Sede() {}
+
+    public Sede() {
+    }
 
     public Sede(String nombre, int capacidad, String direccion) {
         this.nombre = nombre;
@@ -15,5 +16,14 @@ public abstract class Sede {
     }
 
     public abstract Double calcularCostoEntrada();
+
     public abstract int consultarCapacidad();
+
+    public String getNombre() {
+        return this.nombre;
+    }
+
+    public boolean esEstadio() {
+        return this instanceof Estadio;
+    }
 }

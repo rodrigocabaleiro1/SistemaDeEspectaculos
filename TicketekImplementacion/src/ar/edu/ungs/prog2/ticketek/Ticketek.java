@@ -14,6 +14,10 @@ public class Ticketek implements ITicketek {
 	private HashMap<Integer, Entrada> entradasVendidas;
 
 	public Ticketek() {
+		this.usuarios = new HashMap<>();
+		this.espectaculos = new HashMap<>();
+		this.sedes = new HashMap<>();
+		this.entradasVendidas = new HashMap<>();
 	}
 
 	@Override
@@ -27,13 +31,11 @@ public class Ticketek implements ITicketek {
 		if (capacidadMaxima <= 0) {
 			throw new RuntimeException("la capacidad maxima ingresada es invalida");
 		}
-		yaExiteSede(nombre);
+		yaExisteSede(nombre);
 
 		Sede nuevaSede = new Estadio(nombre, direccion, capacidadMaxima);
 		sedes.put(nombre, nuevaSede);
 	}
-
-	
 
 	@Override
 	public void registrarSede(String nombre, String direccion, int capacidadMaxima, int asientosPorFila,
@@ -48,7 +50,7 @@ public class Ticketek implements ITicketek {
 		if (capacidadMaxima <= 0) {
 			throw new RuntimeException("la capacidad maxima ingresada es invalida");
 		}
-		yaExiteSede(nombre);
+		yaExisteSede(nombre);
 
 		Sede nuevaSede = new Teatro(nombre, direccion, capacidadMaxima, asientosPorFila, sectores, capacidad,
 				porcentajeAdicional);
@@ -61,8 +63,8 @@ public class Ticketek implements ITicketek {
 			int cantidadPuestos, double precioConsumicion, String[] sectores, int[] capacidad,
 			int[] porcentajeAdicional) {
 
-		yaExiteSede(nombre);
-		
+		yaExisteSede(nombre);
+
 		Sede nuevaSede = new Miniestadio(nombre, direccion, capacidadMaxima, asientosPorFila, cantidadPuestos,
 				precioConsumicion, sectores, capacidad, porcentajeAdicional);
 		sedes.put(nombre, nuevaSede);
@@ -70,12 +72,11 @@ public class Ticketek implements ITicketek {
 
 	@Override
 	public void registrarUsuario(String email, String nombre, String apellido, String contrasenia) {
-		
+
 		yaExisteUsuario(email);
 		Usuario usuario = new Usuario(email, nombre, apellido, contrasenia);
 		usuarios.put(email, usuario);
 	}
-
 
 	@Override
 	public void registrarEspectaculo(String nombre) {
@@ -86,27 +87,22 @@ public class Ticketek implements ITicketek {
 
 	}
 
-	
-
 	@Override
 	public void agregarFuncion(String nombreEspectaculo, String fecha, String sede, double precioBase) {
 		espectaculoNoRegistrado(nombreEspectaculo);
 		sedeNoRegistrada(sede);
 		yaSeRealizaFuncionEnFecha(nombreEspectaculo, fecha);
 
-		Funcion nuevaFuncion = new Funcion(sede, fecha);
+		Sede sedeObj = sedes.get(sede); // <- Obtener el objeto sede
+		Funcion nuevaFuncion = new Funcion(sedeObj, fecha); // <- Pasar el objeto, no el String
 
 		espectaculos.get(nombreEspectaculo).agregarFuncion(nuevaFuncion, fecha, precioBase);
 	}
 
-	
-
-	
-
 	@Override
 	public List<IEntrada> venderEntrada(String nombreEspectaculo, String fecha, String email, String contrasenia,
 			int cantidadEntradas) {
-		
+
 		espectaculoNoRegistrado(nombreEspectaculo);
 		noHayFuncionEnFecha(nombreEspectaculo, fecha);
 		iniciarSesionUsuario(email, contrasenia);
@@ -114,7 +110,7 @@ public class Ticketek implements ITicketek {
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
 		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
 		Usuario usuario = usuarios.get(email);
-		if (plazasDisponibles(espectaculo, fecha) - cantidadEntradas >= 0) {
+		if (plazasDisponibles(espectaculo, fecha) < cantidadEntradas) {
 			throw new RuntimeException("¡No hay suficientes Plazas Disponibles en esta función!");
 		}
 
@@ -128,7 +124,6 @@ public class Ticketek implements ITicketek {
 		return entradas;
 	}
 
-
 	@Override
 	public List<IEntrada> venderEntrada(String nombreEspectaculo, String fecha, String email, String contrasenia,
 			String sector, int[] asientos) {
@@ -139,46 +134,52 @@ public class Ticketek implements ITicketek {
 
 	@Override
 	public String listarFunciones(String nombreEspectaculo) {
-		espectaculoNoRegistrado(nombreEspectaculo);
 		Espectaculo espectaculo = espectaculos.get(nombreEspectaculo);
-		// Suponiendo que Espectaculo tiene un método consultarFunciones() que devuelve
-		// LinkedList<String> con las fechas
-		LinkedList<String> fechas = espectaculo.consultarFunciones();
-		StringBuilder sb = new StringBuilder();
+		if (espectaculo == null)
+			return "";
 
-		for (String fecha : fechas) {
+		StringBuilder resultado = new StringBuilder();
+		for (String fecha : espectaculo.consultarFunciones()) {
 			Funcion funcion = espectaculo.consultarFuncion(fecha);
-			String nombreSede = funcion.consultarSede();
-			Sede sede = sedes.get(nombreSede);
+			String sedeNombre = funcion.consultarSede();
+			Sede sede = sedes.get(sedeNombre);
+			resultado.append(" - (").append(fecha).append(") ").append(sede.getNombre()).append(" - ");
 
-			sb.append("- (").append(fecha).append(") ").append(nombreSede).append(" - ");
-
-			if (sede instanceof Estadio) {
-				// Sede no numerada
-				int vendidas = funcion.consultarEntradasVendidas();
-				int capacidad = sede.consultarCapacidad();
-				sb.append(vendidas).append("/").append(capacidad);
-			} else {
-				// Sede numerada: mostrar por sector
-				String[] sectores = null;
-				if (sede instanceof Teatro) {
-					sectores = ((Teatro) sede).getSectores();
-				} else if (sede instanceof Miniestadio) {
-					sectores = ((Miniestadio) sede).getSectores();
+			if (sede.esEstadio()) {
+				resultado.append(funcion.consultarEntradasVendidas())
+						.append("/")
+						.append(sede.consultarCapacidad())
+						.append("\n");
+			} else if (sede instanceof Teatro teatro) {
+				for (int i = 0; i < teatro.cantidadSectores(); i++) {
+					if (i > 0)
+						resultado.append(" | ");
+					String nombreSector = teatro.consultarSector(i);
+					int vendidos = funcion.consultarEntradasVendidasSector(nombreSector);
+					resultado.append(nombreSector)
+							.append(": ")
+							.append(vendidos)
+							.append("/")
+							.append(teatro.capacidadSector(i));
 				}
-				for (int i = 0; i < sectores.length; i++) {
-					String sector = sectores[i];
-					int vendidas = funcion.consultarEntradasVendidas();
-					int capacidad = sede.consultarCapacidad();
-					sb.append(sector).append(": ").append(vendidas).append("/").append(capacidad);
-					if (i < sectores.length - 1) {
-						sb.append(" | ");
-					}
+				resultado.append("\n");
+			} else if (sede instanceof Miniestadio mini) {
+				for (int i = 0; i < mini.cantidadSectores(); i++) {
+					if (i > 0)
+						resultado.append(" | ");
+					String nombreSector = mini.consultarSector(i);
+					int vendidos = funcion.consultarEntradasVendidasSector(nombreSector);
+					resultado.append(nombreSector)
+							.append(": ")
+							.append(vendidos)
+							.append("/")
+							.append(mini.capacidadSector(i));
 				}
+				resultado.append("\n");
 			}
-			sb.append("\n");
 		}
-		return sb.toString();
+
+		return resultado.toString();
 	}
 
 	@Override
@@ -240,67 +241,70 @@ public class Ticketek implements ITicketek {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
-	//-------------------------------------------------------------------------------
-	//METODOS AUXILIARES
-	//-------------------------------------------------------------------------------
+
+	// -------------------------------------------------------------------------------
+	// METODOS AUXILIARES
+	// -------------------------------------------------------------------------------
 	private int plazasDisponibles(Espectaculo espectaculo, String fecha) {
 		String sede = espectaculo.consultarSede(fecha);
 		int capacidad = this.sedes.get(sede).consultarCapacidad();
 		int ocupados = espectaculo.consultarVentasFuncion(fecha);
 		return capacidad - ocupados;
 	}
-	
-	//-------------------------------------------------------------------------------
-	//COMPROBAR EXISTENCIA DE DATOS
-	//-------------------------------------------------------------------------------
+
+	// -------------------------------------------------------------------------------
+	// COMPROBAR EXISTENCIA DE DATOS
+	// -------------------------------------------------------------------------------
 	private void yaExisteUsuario(String email) throws RuntimeException {
 		if (this.usuarios.containsKey(email)) {
 			throw new RuntimeException("Ya existe un usuario registrado con ese mail.");
 		}
 	}
-	
-	private void yaExiteSede(String nombre) throws RuntimeException {
+
+	private void yaExisteSede(String nombre) throws RuntimeException {
 		if (this.sedes.containsKey(nombre)) {
 			throw new RuntimeException("Ya existe una sede con el nombre ingresado");
 		}
 	}
-	
+
 	private void yaExisteEspectaculo(String nombre) throws RuntimeException {
 		if (this.espectaculos.containsKey(nombre)) {
 			throw new RuntimeException("Ya existe un Espectaculo con el nombre ingresado");
 		}
 	}
-	
+
 	private void sedeNoRegistrada(String sede) throws RuntimeException {
-		if (this.sedes.containsKey(sede)) {
+		if (!this.sedes.containsKey(sede)) {
 			throw new RuntimeException("¡La Sede ingresada no esta registrada!");
 		}
-	}
+	} // Evita que se intente operar con una sede que no está registrada en el
+		// sistema.
 
 	private void espectaculoNoRegistrado(String nombreEspectaculo) throws RuntimeException {
-		if (this.espectaculos.containsKey(nombreEspectaculo)) {
+		if (!this.espectaculos.containsKey(nombreEspectaculo)) {
 			throw new RuntimeException("¡El Espectaculo ingresado no esta registrado!");
 		}
-	}
+	} // Evita que se intente operar con un espectáculo inexistente.
+
 	private void usuarioNoRegistrado(String email) throws RuntimeException {
 		if (!this.usuarios.containsKey(email)) {
 			throw new RuntimeException("NO existe un usuario registrado con ese mail.");
 		}
 	}
-	
+
 	private void iniciarSesionUsuario(String email, String contrasenia) throws RuntimeException {
 		usuarioNoRegistrado(email);
-		if (this.usuarios.get(email).iniciarSesion(contrasenia)) {
+		if (!this.usuarios.get(email).iniciarSesion(contrasenia)) {
 			throw new RuntimeException("¡Contraseña INVALIDA!");
 		}
 	}
-	
+
 	private void noHayFuncionEnFecha(String nombreEspectaculo, String fecha) throws RuntimeException {
 		if (this.espectaculos.get(nombreEspectaculo).fechaLibre(fecha)) {
 			throw new RuntimeException("NO hay una funcion en la fecha ingresada");
 		}
 	}
+
 	private void yaSeRealizaFuncionEnFecha(String nombreEspectaculo, String fecha) throws RuntimeException {
 		if (!espectaculos.get(nombreEspectaculo).fechaLibre(fecha)) {
 			throw new RuntimeException("¡Ya se realiza una funcion en la fecha ingresada!");

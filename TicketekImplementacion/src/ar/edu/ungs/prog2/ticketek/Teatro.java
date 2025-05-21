@@ -8,38 +8,39 @@ import java.util.*;
  */
 public class Teatro extends Sede {
 
-       public Teatro() {
-    }
-    private int asientosPorFila;
-    private String[] sectores;
-    private int[] porcentajeAdicional;
-    private int[] capacidadSector;
+	public Teatro() {
+	}
 
-    public Teatro(String nombre, String direccion, int capacidadMaxima, int asientosPorFila,
-    		String[] sectores, int[] capacidad, int[] porcentajeAdicional) {
-    	super.nombre = nombre;
-    	super.direccion = direccion;
-    	super.capacidad = capacidadMaxima;
-    	this.asientosPorFila = asientosPorFila;
-    	this.sectores = sectores;
-    	this.capacidadSector = capacidad;
-    	this.porcentajeAdicional = porcentajeAdicional;
-    }
+	private int asientosPorFila;
+	private String[] sectores;
+	private int[] porcentajeAdicional;
+	private int[] capacidadSector;
 
-	    public String[] getSectores() {
-        return this.sectores;
-    }
+	public Teatro(String nombre, String direccion, int capacidadMaxima, int asientosPorFila,
+			String[] sectores, int[] capacidad, int[] porcentajeAdicional) {
+		super.nombre = nombre;
+		super.direccion = direccion;
+		super.capacidad = capacidadMaxima;
+		this.asientosPorFila = asientosPorFila;
+		this.sectores = sectores;
+		this.capacidadSector = capacidad;
+		this.porcentajeAdicional = porcentajeAdicional;
+	}
 
-    public Double calcularCostoEntrada(int sector) {
-        return null;
-    }
+	public String[] getSectores() {
+		return this.sectores;
+	}
+
+	public Double calcularCostoEntrada(int sector) {
+		return null;
+	}
 
 	@Override
 	public Double calcularCostoEntrada() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public int obtenerIncrementoSector(int indice) {
 		return this.porcentajeAdicional[indice];
 	}
@@ -48,14 +49,22 @@ public class Teatro extends Sede {
 		return sectores[x];
 	}
 
-	@Override
+	@Override // puede dar ArrayIndexOutOfBoundsException si el array tiene menos de 5
+				// sectores.
 	public int consultarCapacidad() {
-		// TODO Auto-generated method stub
-		return capacidadSector[0]+capacidadSector[1]+capacidadSector[2]+capacidadSector[4];
+		int total = 0;
+		for (int capacidad : capacidadSector) {
+			total += capacidad;
+		}
+		return total;
 	}
 
-	
+	public int cantidadSectores() {
+		return sectores.length;
+	}
 
-	
+	public int capacidadSector(int i) {
+		return capacidadSector[i];
+	}
 
 }

@@ -5,45 +5,42 @@ import java.util.*;
 
 public class Miniestadio extends Sede {
 
-    private double precioConsumicion;
-    private int asientosPorFila;
-    private String[] sectores;
-    private int[] porcentajeAdicional;
-    private int[] capacidadSector;
-    private int cantidadPuestos;
+	private double precioConsumicion;
+	private int asientosPorFila;
+	private String[] sectores;
+	private int[] porcentajeAdicional;
+	private int[] capacidadSector;
+	private int cantidadPuestos;
 
-    
-
-    public Miniestadio (String nombre, String direccion, int capacidadMaxima, int asientosPorFila,
+	public Miniestadio(String nombre, String direccion, int capacidadMaxima, int asientosPorFila,
 			int cantidadPuestos, double precioConsumicion, String[] sectores, int[] capacidad,
-			int[] porcentajeAdicional)
-    {
-    	super.nombre = nombre;
-    	super.direccion = direccion;
-    	super.capacidad = capacidadMaxima;
-    	this.asientosPorFila = asientosPorFila;
-    	this.sectores = sectores;
-    	this.capacidadSector = capacidad;
-    	this.porcentajeAdicional = porcentajeAdicional;
-    	this.cantidadPuestos = cantidadPuestos;
-    	this.precioConsumicion = precioConsumicion;
+			int[] porcentajeAdicional) {
+		super.nombre = nombre;
+		super.direccion = direccion;
+		super.capacidad = capacidadMaxima;
+		this.asientosPorFila = asientosPorFila;
+		this.sectores = sectores;
+		this.capacidadSector = capacidad;
+		this.porcentajeAdicional = porcentajeAdicional;
+		this.cantidadPuestos = cantidadPuestos;
+		this.precioConsumicion = precioConsumicion;
 
-    }
+	}
 
 	public String[] getSectores() {
-    return this.sectores;
-}
+		return this.sectores;
+	}
 
-    public Double calcularCostoEntrada(int sector) {
-        return null;
-    }
+	public Double calcularCostoEntrada(int sector) {
+		return null;
+	}
 
 	@Override
 	public Double calcularCostoEntrada() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public int obtenerIncrementoSector(int indice) {
 		return this.porcentajeAdicional[indice];
 	}
@@ -52,12 +49,26 @@ public class Miniestadio extends Sede {
 		// TODO Auto-generated method stub
 		return this.precioConsumicion;
 	}
+
 	public String consultarSector(int x) {
 		return sectores[x];
 	}
+
+	@Override // puede dar ArrayIndexOutOfBoundsException si el array tiene menos de 5 sectores.
 	public int consultarCapacidad() {
-		// TODO Auto-generated method stub
-		return capacidadSector[0]+capacidadSector[1]+capacidadSector[2]+capacidadSector[4];
+		int total = 0;
+		for (int capacidad : capacidadSector) {
+			total += capacidad;
+		}
+		return total;
+	}
+
+	public int cantidadSectores() {
+		return sectores.length;
+	}
+
+	public int capacidadSector(int i) {
+		return capacidadSector[i];
 	}
 
 }

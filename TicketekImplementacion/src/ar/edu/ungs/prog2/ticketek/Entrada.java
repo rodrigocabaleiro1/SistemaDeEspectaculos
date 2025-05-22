@@ -12,9 +12,11 @@ public class Entrada implements IEntrada {
 	private String fecha;
 	private Sede ubicacion;
 	private String sector;
-	private Point filaAsiento;
+	private Point filaAsiento; //x:fila/ y:asiento
+	
 
 	public Entrada(Espectaculo espectaculo, String fecha, Sede ubicacion) {
+		validarDatosConstructor(espectaculo, fecha, ubicacion);
 		this.espectaculo = espectaculo;
 		this.fecha = fecha;
 		this.ubicacion = ubicacion;
@@ -22,7 +24,10 @@ public class Entrada implements IEntrada {
 		this.codigo = String.valueOf(++codigoGlobal);
 	}
 
+	
+
 	public Entrada(Espectaculo espectaculo, String fecha, Sede ubicacion, String sector, Point filaAsiento) {
+		validarDatosConstructor(espectaculo, fecha, ubicacion, sector, filaAsiento);
 		this.espectaculo = espectaculo;
 		this.fecha = fecha;
 		this.ubicacion = ubicacion;
@@ -68,26 +73,29 @@ public class Entrada implements IEntrada {
 
 	@Override
 	public String ubicacion() {
-		if (this.ubicacion != null) {
+		if (ubicacionEstadio()) {
 			return this.ubicacion.getNombre();
 		}
-		return null;
+		StringBuilder ubicacionEntrada = new StringBuilder();
+		ubicacionEntrada.append("- ").append(this.ubicacion.getNombre()).append(" f:")
+			.append(this.filaAsiento.x).append(" a:").append(this.filaAsiento.y);
+		return ubicacionEntrada.toString();
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{").append(codigo);
-		sb.append("} - {").append(espectaculo != null ? espectaculo.consultarNombre() : "N/A");
-		sb.append("} - {").append(fecha);
-		sb.append("} - {").append(ubicacion != null ? ubicacion.getNombre() : "N/A");
-		sb.append("} - {").append(sector != null ? sector : "General");
-		sb.append("}");
+		sb.append("- ").append(codigo);
+		sb.append(" - ").append(espectaculo != null ? espectaculo.consultarNombre() : "N/A");
+		sb.append(" - ").append(fecha);
+		sb.append(" - ").append(ubicacion != null ? ubicacion.getNombre() : "N/A");
+		sb.append(ubicacion());
+		sb.append("");
 		return sb.toString();
 	}
 
 	// ----------------------------------------------------------------
-	// SOBRECARGA en los siguientes dos metodos
+	// SOBRECARGA en los siguientes metodos
 	private int obetenerIndiceSector(Teatro teatro) {
 		int indice = 40;
 		for (int x = 0; x < 4; x++) {
@@ -110,6 +118,18 @@ public class Entrada implements IEntrada {
 		return indice;
 	}
 
+	private void validarDatosConstructor(Espectaculo espectaculo, String fecha, Sede ubicacion) {
+		if(espectaculo == null ||fecha == null || ubicacion == null) {
+			throw new RuntimeException("No se puede crear una entrada: Todos los datos de entrada deben estar definidos.");
+		}
+		
+	}
+	private void validarDatosConstructor(Espectaculo espectaculo, String fecha, Sede ubicacion, String sector, Point filaAsiento ) {
+		if(espectaculo == null ||fecha == null || ubicacion == null ||sector == null || filaAsiento == null) {
+			throw new RuntimeException("No se puede crear una entrada: Todos los datos de entrada deben estar definidos.");
+		}
+		
+	}
 	// ------------------------------------------------------------------------
 	public String consultarCodigo() {
 
@@ -119,5 +139,10 @@ public class Entrada implements IEntrada {
 	public Espectaculo getEspectaculo() {
 		return this.espectaculo;
 	}
+	
+	private boolean ubicacionEstadio() { //Comprueba si la sede es estadio o no
+		return this.ubicacion instanceof Estadio;
+	}
+
 
 }

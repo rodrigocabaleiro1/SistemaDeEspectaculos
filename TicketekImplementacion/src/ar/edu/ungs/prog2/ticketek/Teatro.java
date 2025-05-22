@@ -14,7 +14,7 @@ public class Teatro extends Sede {
 	private int asientosPorFila;
 	private String[] sectores;
 	private int[] porcentajeAdicional;
-	private int[] capacidadSector;
+	private int[] capacidadSector; // vamos a asumir que la capacidad del sector son cantidad de filas
 
 	public Teatro(String nombre, String direccion, int capacidadMaxima, int asientosPorFila,
 			String[] sectores, int[] capacidad, int[] porcentajeAdicional) {

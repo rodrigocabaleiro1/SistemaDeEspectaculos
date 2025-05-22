@@ -1,5 +1,6 @@
 package ar.edu.ungs.prog2.ticketek;
 
+import java.awt.Point;
 import java.io.*;
 import java.util.*;
 
@@ -109,17 +110,19 @@ public class Ticketek implements ITicketek {
 
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
 		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
-		Usuario usuario = usuarios.get(email);
-		if (plazasDisponibles(espectaculo, fecha) < cantidadEntradas) {
-			throw new RuntimeException("¡No hay suficientes Plazas Disponibles en esta función!");
-		}
+		Usuario usuario = this.usuarios.get(email);
+		Sede sede = this.sedes.get(espectaculo.consultarSede(fecha));
 
 		for (int i = 0; i < cantidadEntradas; i++) {
 
-			Sede sede = this.sedes.get(espectaculo.consultarSede(fecha));
+			if (plazasDisponibles(espectaculo, fecha) < cantidadEntradas) {
+				throw new RuntimeException("¡No hay suficientes Plazas Disponibles en esta función!");
+			}
+			
 			Entrada entrada = new Entrada(espectaculo, fecha, sede);
 			entradas.add(entrada);
 			usuario.comprarEntrada(entrada.consultarCodigo());
+			espectaculo.venderEntrada(fecha); //deberia aumentar el contador de entradas vendidas
 		}
 		return entradas;
 	}
@@ -128,16 +131,28 @@ public class Ticketek implements ITicketek {
 	public List<IEntrada> venderEntrada(String nombreEspectaculo, String fecha, String email, String contrasenia,
 			String sector, int[] asientos) {
 		// TODO Auto-generated method stub
+		
 		espectaculoNoRegistrado(nombreEspectaculo);
 		noHayFuncionEnFecha(nombreEspectaculo, fecha);
 		iniciarSesionUsuario(email, contrasenia);
+		
+		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
+		Usuario usuario = this.usuarios.get(email);
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
+		Sede sede = this.sedes.get(espectaculo.consultarSede(fecha));
 		
-		
-		
+		for (int i = 0; i < asientos.length; i++) {
+			//falta comprobar que haya plazas suficientes
+	
+			Entrada entrada = new Entrada(espectaculo, fecha, sede, sector, calcularFilaAsiento(sede, asientos[i]));
+			entradas.add(entrada);
+			usuario.comprarEntrada(entrada.consultarCodigo());
+			espectaculo.venderEntrada(fecha); //deberia aumentar el contador de entradas vendidas
+		}
 		
 		return entradas;
 	}
+	
 
 	@Override
 	public String listarFunciones(String nombreEspectaculo) {
@@ -257,6 +272,36 @@ public class Ticketek implements ITicketek {
 		int capacidad = this.sedes.get(sede).consultarCapacidad();
 		int ocupados = espectaculo.consultarVentasFuncion(fecha);
 		return capacidad - ocupados;
+	}
+	
+	private Point calcularFilaAsiento(Sede sede, int numAsiento) {
+		int fila, asiento;
+		fila = 0;
+		asiento = 0;
+		if(sede.getClass() == Teatro.class) {
+			Teatro teatro = (Teatro) sede;
+			int tamanoFila = teatro.obtenerAsientosPorFila();
+			if (numAsiento % tamanoFila == 0) {
+				fila = (numAsiento / tamanoFila) -1;
+				asiento = tamanoFila;
+			}else {
+				fila = numAsiento / tamanoFila;
+				asiento = numAsiento % tamanoFila;
+			}
+			
+		}
+		if(sede.getClass() == Miniestadio.class) {
+			Miniestadio teatro = (Miniestadio) sede;
+			int tamanoFila = teatro.obtenerAsientosPorFila();
+			if (numAsiento % tamanoFila == 0) {
+				fila = (numAsiento / tamanoFila) -1;
+				asiento = tamanoFila;
+			}else {
+				fila = numAsiento / tamanoFila;
+				asiento = numAsiento % tamanoFila;
+			}
+		}
+		return new Point(fila, asiento);
 	}
 
 	// -------------------------------------------------------------------------------

@@ -67,4 +67,9 @@ public class Teatro extends Sede {
 		return capacidadSector[i];
 	}
 
+	public int obtenerAsientosPorFila() {
+		// TODO Auto-generated method stub
+		return this.asientosPorFila;
+	}
+
 }

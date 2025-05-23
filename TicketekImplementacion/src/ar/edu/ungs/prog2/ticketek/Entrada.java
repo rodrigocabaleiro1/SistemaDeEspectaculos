@@ -14,6 +14,7 @@ public class Entrada implements IEntrada {
 	private String sector;
 	private Point filaAsiento; //x:fila/ y:asiento
 	private String comprador;
+	private int numeroAsiento; // absoluto de todo el teatro/miniestadio
 	
 
 	public Entrada(Espectaculo espectaculo, String fecha, Sede ubicacion, String comprador) {

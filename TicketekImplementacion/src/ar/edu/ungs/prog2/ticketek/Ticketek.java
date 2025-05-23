@@ -260,8 +260,16 @@ public class Ticketek implements ITicketek {
 	@Override
 	public boolean anularEntrada(IEntrada entrada, String contrasenia) {
 		// Debe ser en O(1)
+		datoValido(contrasenia, "contraseña");
 		Entrada entradaCast = (Entrada) entrada;
 		iniciarSesionUsuario(entradaCast.consultarComprador(), contrasenia);
+		Usuario usuario= this.usuarios.get(entradaCast.consultarComprador());
+		boolean resultado = usuario.cancelarEntrada(entradaCast.consultarCodigo());
+		if (resultado == true) {
+			Espectaculo espectaculo = entradaCast.getEspectaculo();
+			espectaculo.anularEntrada();
+		}
+		
 		return false;
 	}
 

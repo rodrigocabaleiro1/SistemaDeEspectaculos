@@ -40,12 +40,11 @@ public class Usuario {
         return entradasFuturas;
     }
 
-    private boolean aPosterioraB(Date fechaEntrada, Date fechaActual) {	
-		return fechaEntrada.after(fechaActual);
+    private boolean aPosterioraB(Date a, Date b) {	
+		return a.after(b);
 	}
 
 	public LinkedList<String> listarEntradasCompradas() {
-    	
         return new LinkedList<String>(this.entradasCompradas.keySet());
     }
 
@@ -73,5 +72,32 @@ public class Usuario {
     public boolean iniciarSesion(String contraseniaIngresada) {
         return this.contrasenia.equals(contraseniaIngresada);
     }
+
+	public boolean cancelarEntrada(String codigo) {
+		entradaComprada(codigo);
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy");
+        Date fechaActual = new Date(); 
+
+            try {
+                Date fechaEntrada = formato.parse(this.entradasCompradas.get(codigo));
+                if(aPosterioraB(fechaActual, fechaEntrada)) {
+                	return false;
+                } else {
+                	this.entradasCompradas.remove(codigo);
+                	return true;
+                }
+                
+            } catch (Exception e) {
+                System.out.println("Error al convertir la fecha: " + e.getMessage());
+            }
+            return false;
+	}
+
+	private void entradaComprada(String codigo) {
+		// TODO Auto-generated method stub
+		if (!this.entradasCompradas.containsKey(codigo)) {
+			throw new RuntimeException("La entrada indicada no ha sido comprada por este usuario");
+		}
+	}
 
 }

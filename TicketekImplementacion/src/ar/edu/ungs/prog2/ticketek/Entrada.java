@@ -13,27 +13,31 @@ public class Entrada implements IEntrada {
 	private Sede ubicacion;
 	private String sector;
 	private Point filaAsiento; //x:fila/ y:asiento
+	private String comprador;
 	
 
-	public Entrada(Espectaculo espectaculo, String fecha, Sede ubicacion) {
-		validarDatosConstructor(espectaculo, fecha, ubicacion);
+	public Entrada(Espectaculo espectaculo, String fecha, Sede ubicacion, String comprador) {
+		validarDatosConstructor(comprador, espectaculo, fecha, ubicacion);
 		this.espectaculo = espectaculo;
 		this.fecha = fecha;
 		this.ubicacion = ubicacion;
 		this.sector = null;
 		this.codigo = String.valueOf(++codigoGlobal);
+		this.comprador = comprador;
 	}
 
 	
 
-	public Entrada(Espectaculo espectaculo, String fecha, Sede ubicacion, String sector, Point filaAsiento) {
-		validarDatosConstructor(espectaculo, fecha, ubicacion, sector, filaAsiento);
+	public Entrada(Espectaculo espectaculo, String fecha, Sede ubicacion, String sector, Point filaAsiento, String comprador) {
+		validarDatosConstructor(comprador, espectaculo, fecha, ubicacion, sector, filaAsiento);
 		this.espectaculo = espectaculo;
 		this.fecha = fecha;
 		this.ubicacion = ubicacion;
 		this.sector = sector;
 		this.codigo = String.valueOf(++codigoGlobal);
 		this.filaAsiento = filaAsiento;
+		this.comprador = comprador;
+
 	}
 
 	public void modificarSede(Sede sedeNueva) {
@@ -118,14 +122,14 @@ public class Entrada implements IEntrada {
 		return indice;
 	}
 
-	private void validarDatosConstructor(Espectaculo espectaculo, String fecha, Sede ubicacion) {
-		if(espectaculo == null ||fecha == null || ubicacion == null) {
+	private void validarDatosConstructor(String comprador, Espectaculo espectaculo, String fecha, Sede ubicacion) {
+		if(espectaculo == null ||fecha == null || ubicacion == null || comprador == null) {
 			throw new RuntimeException("No se puede crear una entrada: Todos los datos de entrada deben estar definidos.");
 		}
 		
 	}
-	private void validarDatosConstructor(Espectaculo espectaculo, String fecha, Sede ubicacion, String sector, Point filaAsiento ) {
-		if(espectaculo == null ||fecha == null || ubicacion == null ||sector == null || filaAsiento == null) {
+	private void validarDatosConstructor(String comprador, Espectaculo espectaculo, String fecha, Sede ubicacion, String sector, Point filaAsiento ) {
+		if(espectaculo == null ||fecha == null || ubicacion == null ||sector == null || filaAsiento == null || comprador == null) {
 			throw new RuntimeException("No se puede crear una entrada: Todos los datos de entrada deben estar definidos.");
 		}
 		
@@ -142,6 +146,20 @@ public class Entrada implements IEntrada {
 	
 	private boolean ubicacionEstadio() { //Comprueba si la sede es estadio o no
 		return this.ubicacion instanceof Estadio;
+	}
+
+
+
+	public String consultarFecha() {
+		// TODO Auto-generated method stub
+		return this.fecha;
+	}
+
+
+
+	public String consultarComprador() {
+		
+		return this.comprador;
 	}
 
 

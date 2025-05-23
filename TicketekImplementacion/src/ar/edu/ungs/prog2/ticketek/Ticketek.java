@@ -120,9 +120,9 @@ public class Ticketek implements ITicketek {
 				throw new RuntimeException("¡No hay suficientes Plazas Disponibles en esta función!");
 			}
 			
-			Entrada entrada = new Entrada(espectaculo, fecha, sede);
+			Entrada entrada = new Entrada(espectaculo, fecha, sede, email);
 			entradas.add(entrada);
-			usuario.comprarEntrada(entrada.consultarCodigo());
+			usuario.comprarEntrada(entrada.consultarCodigo(), entrada.consultarFecha());
 			espectaculo.venderEntrada(fecha); //deberia aumentar el contador de entradas vendidas
 			this.entradasVendidas.put(entrada.consultarCodigo(), entrada);
 		}
@@ -146,9 +146,9 @@ public class Ticketek implements ITicketek {
 		for (int i = 0; i < asientos.length; i++) {
 			//falta comprobar que haya plazas suficientes
 	
-			Entrada entrada = new Entrada(espectaculo, fecha, sede, sector, calcularFilaAsiento(sede, asientos[i]));
+			Entrada entrada = new Entrada(espectaculo, fecha, sede, sector, calcularFilaAsiento(sede, asientos[i]), email);
 			entradas.add(entrada);
-			usuario.comprarEntrada(entrada.consultarCodigo());
+			usuario.comprarEntrada(entrada.consultarCodigo(), entrada.consultarFecha());
 			espectaculo.venderEntrada(fecha); //deberia aumentar el contador de entradas vendidas
 			this.entradasVendidas.put(entrada.consultarCodigo(), entrada);
 		}
@@ -227,22 +227,41 @@ public class Ticketek implements ITicketek {
 
 	@Override
 	public List<IEntrada> listarEntradasFuturas(String email, String contrasenia) {
+		datoValido(email, "email");
+		datoValido(contrasenia, "contraseña");
+		iniciarSesionUsuario(email,contrasenia);
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
-		
-		
+		Usuario usuario = this.usuarios.get(email);
+		LinkedList <String> codigosFuturos = usuario.listarEntradasFuturas();
+		for (String codigo: codigosFuturos) {
+			entradas.add(this.entradasVendidas.get(codigo));
+		}
+
+		return entradas;
+	}
+
+	
+
+	@Override
+	public List<IEntrada> listarTodasLasEntradasDelUsuario(String email, String contrasenia) {
+		datoValido(email, "email");
+		datoValido(contrasenia, "contraseña");
+		iniciarSesionUsuario(email,contrasenia);
+		List<IEntrada> entradas = new LinkedList<IEntrada>();
+		Usuario usuario = this.usuarios.get(email);
+		LinkedList <String> codigos = usuario.listarEntradasCompradas();
+		for (String codigo: codigos) {
+			entradas.add(this.entradasVendidas.get(codigo));
+		}
 
 		return entradas;
 	}
 
 	@Override
-	public List<IEntrada> listarTodasLasEntradasDelUsuario(String email, String contrasenia) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean anularEntrada(IEntrada entrada, String contrasenia) {
-		// TODO Auto-generated method stub
+		// Debe ser en O(1)
+		Entrada entradaCast = (Entrada) entrada;
+		iniciarSesionUsuario(entradaCast.consultarComprador(), contrasenia);
 		return false;
 	}
 
@@ -379,5 +398,11 @@ public class Ticketek implements ITicketek {
 		if (!espectaculos.get(nombreEspectaculo).fechaLibre(fecha)) {
 			throw new RuntimeException("¡Ya se realiza una funcion en la fecha ingresada!");
 		}
+	}
+	private void datoValido(String parametro, String nombreParametro) throws RuntimeException{
+		if(parametro == null || parametro.length() == 0) {
+			throw new RuntimeException("¡Dato Invalido: " + nombreParametro + "!");
+		}
+		
 	}
 }

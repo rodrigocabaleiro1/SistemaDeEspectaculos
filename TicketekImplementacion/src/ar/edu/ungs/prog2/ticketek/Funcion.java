@@ -1,5 +1,6 @@
 package ar.edu.ungs.prog2.ticketek;
 
+import java.awt.Point;
 import java.io.*;
 import java.util.*;
 
@@ -12,11 +13,14 @@ public class Funcion {
     private String fecha;
     private int entradasVendidas;
     private HashMap<String, Integer> entradasVendidasPorSector;
+    private HashMap<Integer, String> asientosOcupados; //nro asiento / sector
 
     public Funcion(Sede sede, String fecha) {
         this.sede = sede;
         this.fecha = fecha;
         this.entradasVendidasPorSector = new HashMap<>();
+        this.entradasVendidas =0;
+        this.asientosOcupados = new HashMap<>();
     }
 
     public Sede getSede() {
@@ -31,11 +35,12 @@ public class Funcion {
         return this.entradasVendidas;
     }
 
-    public void venderEntrada(String sector) {
+    public void venderEntrada(String sector, int asiento) {
         this.entradasVendidas++;
         if (sector != null) {
         	this.entradasVendidasPorSector.put(sector, entradasVendidasPorSector.getOrDefault(sector, 0) + 1);
         }
+        ocuparAsiento(sector, asiento);
     }
 
     public int consultarEntradasVendidasSector(String sector) {
@@ -45,4 +50,12 @@ public class Funcion {
 	public void venderEntrada() {
 		this.entradasVendidas++;	
 	}
+	public void ocuparAsiento(String sector, int asiento) {
+		int asientoInicialSector = 
+	}
+	public void desocuparAsiento() {}
+	public boolean lugarLibre() {
+		return false;
+	}
+	
 }

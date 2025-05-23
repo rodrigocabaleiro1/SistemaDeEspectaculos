@@ -32,13 +32,17 @@ public class Funcion {
     }
 
     public void venderEntrada(String sector) {
-        entradasVendidas++;
+        this.entradasVendidas++;
         if (sector != null) {
-        	entradasVendidasPorSector.put(sector, entradasVendidasPorSector.getOrDefault(sector, 0) + 1);
+        	this.entradasVendidasPorSector.put(sector, entradasVendidasPorSector.getOrDefault(sector, 0) + 1);
         }
     }
 
     public int consultarEntradasVendidasSector(String sector) {
         return entradasVendidasPorSector.getOrDefault(sector, 0);
     }
+
+	public void venderEntrada() {
+		this.entradasVendidas++;	
+	}
 }

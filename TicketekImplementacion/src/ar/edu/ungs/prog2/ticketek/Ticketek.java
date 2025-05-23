@@ -2,6 +2,7 @@ package ar.edu.ungs.prog2.ticketek;
 
 import java.awt.Point;
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -12,7 +13,7 @@ public class Ticketek implements ITicketek {
 	private HashMap<String, Usuario> usuarios;
 	private HashMap<String, Espectaculo> espectaculos;
 	private HashMap<String, Sede> sedes;
-	private HashMap<Integer, Entrada> entradasVendidas;
+	private HashMap<String, Entrada> entradasVendidas;
 
 	public Ticketek() {
 		this.usuarios = new HashMap<>();
@@ -123,6 +124,7 @@ public class Ticketek implements ITicketek {
 			entradas.add(entrada);
 			usuario.comprarEntrada(entrada.consultarCodigo());
 			espectaculo.venderEntrada(fecha); //deberia aumentar el contador de entradas vendidas
+			this.entradasVendidas.put(entrada.consultarCodigo(), entrada);
 		}
 		return entradas;
 	}
@@ -148,6 +150,7 @@ public class Ticketek implements ITicketek {
 			entradas.add(entrada);
 			usuario.comprarEntrada(entrada.consultarCodigo());
 			espectaculo.venderEntrada(fecha); //deberia aumentar el contador de entradas vendidas
+			this.entradasVendidas.put(entrada.consultarCodigo(), entrada);
 		}
 		
 		return entradas;
@@ -207,13 +210,28 @@ public class Ticketek implements ITicketek {
 	@Override
 	public List<IEntrada> listarEntradasEspectaculo(String nombreEspectaculo) {
 		// TODO Auto-generated method stub
-		return null;
+		espectaculoNoRegistrado(nombreEspectaculo);
+		List<IEntrada> entradas = new LinkedList<IEntrada>();
+		for (String codigo : this.entradasVendidas.keySet()) {
+			String nombreEspectaculoEntrada = this.entradasVendidas.get(codigo).getEspectaculo().consultarNombre();
+			if(nombreEspectaculo == nombreEspectaculoEntrada) {
+				entradas.add(this.entradasVendidas.get(codigo));
+			}
+		}
+		
+		if (entradas.isEmpty()) {
+			throw new RuntimeException("Este espectaculo no vendió ninguna entrada");
+		}
+		return entradas;
 	}
 
 	@Override
 	public List<IEntrada> listarEntradasFuturas(String email, String contrasenia) {
-		// TODO Auto-generated method stub
-		return null;
+		List<IEntrada> entradas = new LinkedList<IEntrada>();
+		
+		
+
+		return entradas;
 	}
 
 	@Override

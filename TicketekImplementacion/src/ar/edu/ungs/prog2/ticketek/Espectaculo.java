@@ -66,6 +66,12 @@ public class Espectaculo {
 		return this.nombre;
 	}
 
+		public void venderEntrada(String fecha) {
+			existeFuncion(fecha);
+			this.funciones.get(fecha).venderEntrada();
+			
+		}
+
 	/*
 	 * public void mapNull(HashMap <String, Funcion> map) throws RuntimeException{
 	 * if(map == null) {

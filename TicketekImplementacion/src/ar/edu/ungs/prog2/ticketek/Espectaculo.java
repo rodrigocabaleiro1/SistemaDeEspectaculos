@@ -73,12 +73,11 @@ public class Espectaculo {
 
 		double precioVenta = entrada.precio(); // O(1)
 
-		Sede sedeDeLaEntrada = funcion.getSede();
-		String nombreSedeLimpio = sedeDeLaEntrada.getNombre();
+		String Sede = funcion.consultarSede();
 
 		this.recaudacion += precioVenta;
-		this.recaudacionPorSede.put(nombreSedeLimpio,
-				this.recaudacionPorSede.getOrDefault(nombreSedeLimpio, 0.0) + precioVenta);
+		this.recaudacionPorSede.put(Sede,
+				this.recaudacionPorSede.getOrDefault(Sede, 0.0) + precioVenta);
 	}
 
 	public void anularEntrada(Entrada entrada) {
@@ -88,22 +87,29 @@ public class Espectaculo {
 
 		double precioEntradaAnulada = entrada.precio(); // O(1)
 
-		Sede sedeDeLaEntrada = funcion.getSede();
-		String nombreSedeLimpio = sedeDeLaEntrada.getNombre();
-
+		String Sede = funcion.consultarSede();
+		
 		this.recaudacion -= precioEntradaAnulada;
-		this.recaudacionPorSede.put(nombreSedeLimpio,
-				this.recaudacionPorSede.getOrDefault(nombreSedeLimpio, 0.0) - precioEntradaAnulada);
+		this.recaudacionPorSede.put(Sede,
+				this.recaudacionPorSede.getOrDefault(Sede, 0.0) - precioEntradaAnulada);
 	}
 
 	// Getter para la recaudación total del espectáculo
-	public Double getRecaudacionTotal() {
+	public Double recaudacionTotal() {
 		return this.recaudacion;
 	}
 
 	// Getter para el mapa de recaudación por sede
-	public HashMap<String, Double> getRecaudacionPorSedeMap() {
-		return this.recaudacionPorSede;
+	public Double recaudacionPorSede(String sede) {
+		existeSede(sede);
+		return this.recaudacionPorSede.getOrDefault(sede, 0.0);
+	}
+
+	private void existeSede(String sede) {
+		if(this.recaudacionPorSede.containsKey(sede)) {
+			throw new RuntimeException("La sede ingresada no existe: " + sede);
+		}
+		
 	}
 
 	/*

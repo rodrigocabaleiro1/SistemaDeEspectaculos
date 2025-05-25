@@ -27,8 +27,14 @@ public class Teatro extends Sede {
 		this.porcentajeAdicional = porcentajeAdicional;
 	}
 
-	public String[] getSectores() {
-		return this.sectores;
+	public int obtenerIncrementoSector(String sector) {
+		for (int i = 0; i < 4; i++) {
+			if (this.sectores[i] == sector) {
+				return obtenerIncrementoSector(i);
+			}
+		}
+		throw new RuntimeException("El sector '" + sector + "' no existe en el teatro '" + this.nombre + "'.");
+
 	}
 
 	public Double calcularCostoEntrada(int sector) {

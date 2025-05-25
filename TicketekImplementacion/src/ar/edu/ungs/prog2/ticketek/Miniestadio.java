@@ -71,9 +71,19 @@ public class Miniestadio extends Sede {
 		return capacidadSector[i];
 	}
 
+	public int obtenerIncrementoSector(String sector) {
+		for (int i = 0; i < 4; i++) {
+			if (this.sectores[i] == sector) {
+				return obtenerIncrementoSector(i);
+			}
+		}
+		throw new RuntimeException("El sector '" + sector + "' no existe en el teatro '" + this.nombre + "'.");
+
+	}
 	public int obtenerAsientosPorFila() {
 		// TODO Auto-generated method stub
 		return this.asientosPorFila;
 	}
+
 
 }

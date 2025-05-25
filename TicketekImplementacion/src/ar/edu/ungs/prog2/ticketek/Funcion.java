@@ -23,10 +23,6 @@ public class Funcion {
         this.asientosOcupados = new HashMap<>();
     }
 
-    public Sede getSede() {
-        return this.sede;
-    }
-
     public String consultarSede() {
         return this.sede.getNombre();
     }

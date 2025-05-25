@@ -458,30 +458,19 @@ public class Ticketek implements ITicketek {
 		noHayFuncionEnFecha(nombreEspectaculo, fecha);
 
 		Funcion funcion = espectaculo.consultarFuncion(fecha);
-		Sede sede = funcion.getSede(); // Sede object from Funcion
-		double precioBase = espectaculo.consultarPrecioBase();
+		Sede sede = this.sedes.get(funcion.consultarSede()); // Sede object from Funcion
+		double precio = espectaculo.consultarPrecioBase();
 
-		if (sede instanceof Estadio) {
-			return precioBase;
-		} else if (sede instanceof Teatro teatro) {
-			String[] sectoresSede = teatro.getSectores();
-			for (int i = 0; i < sectoresSede.length; i++) {
-				if (sectoresSede[i].equalsIgnoreCase(sector)) {
-					int porcentaje = teatro.obtenerIncrementoSector(i);
-					return precioBase * (1 + (porcentaje / 100.0));
-				}
-			}
-			throw new RuntimeException("El sector '" + sector + "' no existe en el teatro '" + sede.getNombre() + "'.");
+		if (sede instanceof Teatro teatro) {
+				int porcentaje = teatro.obtenerIncrementoSector(sector);
+				return precio * (1 + (porcentaje / 100.0));
+
 		} else if (sede instanceof Miniestadio miniestadio) {
-			String[] sectoresSede = miniestadio.getSectores();
-			for (int i = 0; i < sectoresSede.length; i++) {
-				if (sectoresSede[i].equalsIgnoreCase(sector)) {
-					int porcentaje = miniestadio.obtenerIncrementoSector(i);
-					return precioBase * (1 + (porcentaje / 100.0));
-				}
-			}
-			throw new RuntimeException(
-					"El sector '" + sector + "' no existe en el miniestadio '" + sede.getNombre() + "'.");
+
+			int porcentaje = miniestadio.obtenerIncrementoSector(sector);
+			double precioConsumision = miniestadio.obtenerPrecioConsumision();
+			return precio * (1 + (porcentaje / 100.0)) + precioConsumision;
+
 		} else {
 			throw new RuntimeException("Tipo de sede desconocido: " + sede.getClass().getName());
 		}
@@ -492,8 +481,8 @@ public class Ticketek implements ITicketek {
 		datoValido(nombreEspectaculo, "nombre del espectáculo");
 		espectaculoNoRegistrado(nombreEspectaculo);
 		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
-		Double total = espectaculo.getRecaudacionTotal();
-		return total != null ? total : 0.0;
+		Double total = espectaculo.recaudacionTotal();
+		return total;
 	}
 
 	@Override
@@ -504,8 +493,7 @@ public class Ticketek implements ITicketek {
 		sedeNoRegistrada(nombreSede);
 
 		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
-		HashMap<String, Double> recaudacionesSede = espectaculo.getRecaudacionPorSedeMap();
-		return recaudacionesSede.getOrDefault(nombreSede, 0.0);
+		return espectaculo.recaudacionPorSede(nombreSede);
 	}
 
 	// -------------------------------------------------------------------------------

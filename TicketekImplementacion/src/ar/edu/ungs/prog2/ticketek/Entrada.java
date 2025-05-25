@@ -100,26 +100,27 @@ public class Entrada implements IEntrada {
 	// ----------------------------------------------------------------
 	// SOBRECARGA en los siguientes metodos
 	private int obetenerIndiceSector(Teatro teatro) {
-		int indice = 40;
+		int indice;
 		for (int x = 0; x < 4; x++) {
 			if (teatro.consultarSector(x) == this.sector) {
 				indice = x;
+				return indice;
 			}
 		}
 
-		return indice;
+		throw new RuntimeException("No se ha encontrado el sector");
 	}
 
 	private int obetenerIndiceSector(Miniestadio miniestadio) {
-		int indice = 40;
+		int indice;
 		for (int x = 0; x < 4; x++) {
 			if (miniestadio.consultarSector(x) == this.sector) {
 				indice = x;
+				return indice;
 			}
 		}
 
-		return indice;
-	}
+		throw new RuntimeException("No se ha encontrado el sector");	}
 
 	private void validarDatosConstructor(String comprador, Espectaculo espectaculo, String fecha, Sede ubicacion) {
 		if (espectaculo == null || fecha == null || ubicacion == null || comprador == null) {

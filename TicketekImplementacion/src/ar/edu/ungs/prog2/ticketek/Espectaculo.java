@@ -62,15 +62,49 @@ public class Espectaculo {
 		}
 	}
 
-		public String consultarNombre() {
+	public String consultarNombre() {
 		return this.nombre;
 	}
 
-		public void venderEntrada(String fecha) {
-			existeFuncion(fecha);
-			this.funciones.get(fecha).venderEntrada();
-			
-		}
+	public void venderEntrada(Entrada entrada) {
+		existeFuncion(entrada.consultarFecha());
+		Funcion funcion = this.funciones.get(entrada.consultarFecha());
+		funcion.venderEntrada();
+
+		double precioVenta = entrada.precio(); // O(1)
+
+		Sede sedeDeLaEntrada = funcion.getSede();
+		String nombreSedeLimpio = sedeDeLaEntrada.getNombre();
+
+		this.recaudacion += precioVenta;
+		this.recaudacionPorSede.put(nombreSedeLimpio,
+				this.recaudacionPorSede.getOrDefault(nombreSedeLimpio, 0.0) + precioVenta);
+	}
+
+	public void anularEntrada(Entrada entrada) {
+		existeFuncion(entrada.consultarFecha());
+		Funcion funcion = this.funciones.get(entrada.consultarFecha());
+		funcion.anularEntrada();
+
+		double precioEntradaAnulada = entrada.precio(); // O(1)
+
+		Sede sedeDeLaEntrada = funcion.getSede();
+		String nombreSedeLimpio = sedeDeLaEntrada.getNombre();
+
+		this.recaudacion -= precioEntradaAnulada;
+		this.recaudacionPorSede.put(nombreSedeLimpio,
+				this.recaudacionPorSede.getOrDefault(nombreSedeLimpio, 0.0) - precioEntradaAnulada);
+	}
+
+	// Getter para la recaudación total del espectáculo
+	public Double getRecaudacionTotal() {
+		return this.recaudacion;
+	}
+
+	// Getter para el mapa de recaudación por sede
+	public HashMap<String, Double> getRecaudacionPorSedeMap() {
+		return this.recaudacionPorSede;
+	}
 
 	/*
 	 * public void mapNull(HashMap <String, Funcion> map) throws RuntimeException{

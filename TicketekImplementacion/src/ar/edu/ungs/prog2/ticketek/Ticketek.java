@@ -119,11 +119,11 @@ public class Ticketek implements ITicketek {
 			if (plazasDisponibles(espectaculo, fecha) < cantidadEntradas) {
 				throw new RuntimeException("¡No hay suficientes Plazas Disponibles en esta función!");
 			}
-			
+
 			Entrada entrada = new Entrada(espectaculo, fecha, sede, email);
 			entradas.add(entrada);
 			usuario.comprarEntrada(entrada.consultarCodigo(), entrada.consultarFecha());
-			espectaculo.venderEntrada(fecha); //deberia aumentar el contador de entradas vendidas
+			espectaculo.venderEntrada(entrada);
 			this.entradasVendidas.put(entrada.consultarCodigo(), entrada);
 		}
 		return entradas;
@@ -133,29 +133,29 @@ public class Ticketek implements ITicketek {
 	public List<IEntrada> venderEntrada(String nombreEspectaculo, String fecha, String email, String contrasenia,
 			String sector, int[] asientos) {
 		// TODO Auto-generated method stub
-		
+
 		espectaculoNoRegistrado(nombreEspectaculo);
 		noHayFuncionEnFecha(nombreEspectaculo, fecha);
 		iniciarSesionUsuario(email, contrasenia);
-		
+
 		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
 		Usuario usuario = this.usuarios.get(email);
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
 		Sede sede = this.sedes.get(espectaculo.consultarSede(fecha));
-		
+
 		for (int i = 0; i < asientos.length; i++) {
-			//falta comprobar que haya plazas suficientes
-	
-			Entrada entrada = new Entrada(espectaculo, fecha, sede, sector, calcularFilaAsiento(sede, asientos[i]), email);
+			// falta comprobar que haya plazas suficientes
+
+			Entrada entrada = new Entrada(espectaculo, fecha, sede, sector, calcularFilaAsiento(sede, asientos[i]),
+					email);
 			entradas.add(entrada);
 			usuario.comprarEntrada(entrada.consultarCodigo(), entrada.consultarFecha());
-			espectaculo.venderEntrada(fecha); //deberia aumentar el contador de entradas vendidas
+			espectaculo.venderEntrada(entrada);
 			this.entradasVendidas.put(entrada.consultarCodigo(), entrada);
 		}
-		
+
 		return entradas;
 	}
-	
 
 	@Override
 	public String listarFunciones(String nombreEspectaculo) {
@@ -214,11 +214,11 @@ public class Ticketek implements ITicketek {
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
 		for (String codigo : this.entradasVendidas.keySet()) {
 			String nombreEspectaculoEntrada = this.entradasVendidas.get(codigo).getEspectaculo().consultarNombre();
-			if(nombreEspectaculo == nombreEspectaculoEntrada) {
+			if (nombreEspectaculo == nombreEspectaculoEntrada) {
 				entradas.add(this.entradasVendidas.get(codigo));
 			}
 		}
-		
+
 		if (entradas.isEmpty()) {
 			throw new RuntimeException("Este espectaculo no vendió ninguna entrada");
 		}
@@ -229,28 +229,26 @@ public class Ticketek implements ITicketek {
 	public List<IEntrada> listarEntradasFuturas(String email, String contrasenia) {
 		datoValido(email, "email");
 		datoValido(contrasenia, "contraseña");
-		iniciarSesionUsuario(email,contrasenia);
+		iniciarSesionUsuario(email, contrasenia);
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
 		Usuario usuario = this.usuarios.get(email);
-		LinkedList <String> codigosFuturos = usuario.listarEntradasFuturas();
-		for (String codigo: codigosFuturos) {
+		LinkedList<String> codigosFuturos = usuario.listarEntradasFuturas();
+		for (String codigo : codigosFuturos) {
 			entradas.add(this.entradasVendidas.get(codigo));
 		}
 
 		return entradas;
 	}
 
-	
-
 	@Override
 	public List<IEntrada> listarTodasLasEntradasDelUsuario(String email, String contrasenia) {
 		datoValido(email, "email");
 		datoValido(contrasenia, "contraseña");
-		iniciarSesionUsuario(email,contrasenia);
+		iniciarSesionUsuario(email, contrasenia);
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
 		Usuario usuario = this.usuarios.get(email);
-		LinkedList <String> codigos = usuario.listarEntradasCompradas();
-		for (String codigo: codigos) {
+		LinkedList<String> codigos = usuario.listarEntradasCompradas();
+		for (String codigo : codigos) {
 			entradas.add(this.entradasVendidas.get(codigo));
 		}
 
@@ -263,50 +261,251 @@ public class Ticketek implements ITicketek {
 		datoValido(contrasenia, "contraseña");
 		Entrada entradaCast = (Entrada) entrada;
 		iniciarSesionUsuario(entradaCast.consultarComprador(), contrasenia);
-		Usuario usuario= this.usuarios.get(entradaCast.consultarComprador());
+		Usuario usuario = this.usuarios.get(entradaCast.consultarComprador());
 		boolean resultado = usuario.cancelarEntrada(entradaCast.consultarCodigo());
 		if (resultado == true) {
 			Espectaculo espectaculo = entradaCast.getEspectaculo();
-			espectaculo.anularEntrada();
+			espectaculo.anularEntrada(entradaCast);
 		}
-		
-		return false;
+
+		return resultado;
 	}
 
 	@Override
-	public IEntrada cambiarEntrada(IEntrada entrada, String contrasenia, String fecha, String sector, int asiento) {
-		// TODO Auto-generated method stub
-		return null;
+	public IEntrada cambiarEntrada(IEntrada entrada, String contrasenia, String nuevaFecha, String nuevoSector,
+			int asiento) {
+		// 1. Validaciones preliminares
+		if (entrada == null) {
+			throw new IllegalArgumentException("La entrada original no puede ser nula.");
+		}
+		datoValido(contrasenia, "contraseña");
+		datoValido(nuevaFecha, "nueva fecha");
+		datoValido(nuevoSector, "nuevo sector");
+		if (asiento <= 0) {
+			throw new IllegalArgumentException("El número de asiento debe ser positivo.");
+		}
+
+		Entrada originalEntrada = (Entrada) entrada;
+		String emailComprador = originalEntrada.consultarComprador();
+
+		// 2. Autenticar usuario
+		iniciarSesionUsuario(emailComprador, contrasenia);
+		Usuario usuario = this.usuarios.get(emailComprador);
+
+		// 3. Verificar validez de la entrada original con el sistema y el usuario
+		if (!this.entradasVendidas.containsKey(originalEntrada.consultarCodigo()) ||
+				!this.entradasVendidas.get(originalEntrada.consultarCodigo()).equals(originalEntrada)) {
+			throw new RuntimeException("La entrada original no es válida o no se encuentra en el sistema.");
+		}
+
+		Espectaculo espectaculo = originalEntrada.getEspectaculo();
+		String nombreEspectaculo = espectaculo.consultarNombre();
+
+		// 4. Validar nueva función, sede, sector y disponibilidad
+		espectaculoNoRegistrado(nombreEspectaculo);
+		noHayFuncionEnFecha(nombreEspectaculo, nuevaFecha);
+
+		Funcion funcionNueva = espectaculo.consultarFuncion(nuevaFecha);
+		Sede sedeNueva = this.sedes.get(funcionNueva.consultarSede());
+
+		if (!(sedeNueva instanceof Teatro || sedeNueva instanceof Miniestadio)) {
+			throw new RuntimeException(
+					"El cambio a un sector y asiento específico solo es válido para Teatros o Miniestadios.");
+		}
+
+		boolean sectorValidoEnSede = false;
+		int capacidadDelSector = -1;
+
+		if (sedeNueva instanceof Teatro teatro) {
+			for (int i = 0; i < teatro.cantidadSectores(); i++) {
+				if (teatro.consultarSector(i).equals(nuevoSector)) {
+					sectorValidoEnSede = true;
+					capacidadDelSector = teatro.capacidadSector(i);
+					break;
+				}
+			}
+		} else if (sedeNueva instanceof Miniestadio miniestadio) {
+			for (int i = 0; i < miniestadio.cantidadSectores(); i++) {
+				if (miniestadio.consultarSector(i).equals(nuevoSector)) {
+					sectorValidoEnSede = true;
+					capacidadDelSector = miniestadio.capacidadSector(i);
+					break;
+				}
+			}
+		}
+
+		if (!sectorValidoEnSede) {
+			throw new RuntimeException(
+					"El sector '" + nuevoSector + "' no es válido para la sede de la nueva función.");
+		}
+
+		// Chequeo de capacidad del sector
+		if (capacidadDelSector != -1
+				&& funcionNueva.consultarEntradasVendidasSector(nuevoSector) >= capacidadDelSector) {
+			throw new RuntimeException("El sector '" + nuevoSector + "' está lleno para la nueva fecha y función.");
+		}
+
+		// 5. Anular la entrada original
+		boolean canceladaPorUsuario = usuario.cancelarEntrada(originalEntrada.consultarCodigo());
+		if (!canceladaPorUsuario) {
+			throw new RuntimeException(
+					"La entrada original no pudo ser cancelada por el usuario (verifique que la poseía).");
+		}
+		espectaculo.anularEntrada(originalEntrada);
+		if (this.entradasVendidas.remove(originalEntrada.consultarCodigo()) == null) {
+			throw new RuntimeException(
+					"Error interno: La entrada original no se encontró en la lista de vendidas para su remoción, aunque debería haber estado.");
+		}
+		// 6. Crear y "vender" la nueva entrada
+		Point nuevasCoordenadasAsiento = calcularFilaAsiento(sedeNueva, asiento);
+		Entrada nuevaEntrada = new Entrada(espectaculo, nuevaFecha, sedeNueva, nuevoSector, nuevasCoordenadasAsiento,
+				emailComprador);
+
+		usuario.comprarEntrada(nuevaEntrada.consultarCodigo(), nuevaEntrada.consultarFecha());
+		espectaculo.venderEntrada(nuevaEntrada);
+		this.entradasVendidas.put(nuevaEntrada.consultarCodigo(), nuevaEntrada);
+
+		return nuevaEntrada;
 	}
 
 	@Override
-	public IEntrada cambiarEntrada(IEntrada entrada, String contrasenia, String fecha) {
-		// TODO Auto-generated method stub
-		return null;
+	public IEntrada cambiarEntrada(IEntrada entrada, String contrasenia, String nuevaFecha) {
+		// 1. Validaciones preliminares
+		if (entrada == null) {
+			throw new IllegalArgumentException("La entrada original no puede ser nula.");
+		}
+		datoValido(contrasenia, "contraseña");
+		datoValido(nuevaFecha, "nueva fecha");
+
+		Entrada originalEntrada = (Entrada) entrada;
+		String emailComprador = originalEntrada.consultarComprador();
+
+		// 2. Autenticar usuario
+		iniciarSesionUsuario(emailComprador, contrasenia);
+		Usuario usuario = this.usuarios.get(emailComprador);
+
+		// 3. Verificar validez de la entrada original
+		if (!this.entradasVendidas.containsKey(originalEntrada.consultarCodigo()) ||
+				!this.entradasVendidas.get(originalEntrada.consultarCodigo()).equals(originalEntrada)) {
+			throw new RuntimeException("La entrada original no es válida o no se encuentra en el sistema.");
+		}
+
+		Espectaculo espectaculo = originalEntrada.getEspectaculo();
+		String nombreEspectaculo = espectaculo.consultarNombre();
+
+		// 4. Validar nueva función y su Sede
+		espectaculoNoRegistrado(nombreEspectaculo);
+		noHayFuncionEnFecha(nombreEspectaculo, nuevaFecha);
+
+		Funcion funcionNueva = espectaculo.consultarFuncion(nuevaFecha);
+		Sede sedeNueva = this.sedes.get(funcionNueva.consultarSede());
+
+		// 5. Lógica de cambio basada en el tipo de la nueva Sede
+		if (sedeNueva instanceof Estadio) {
+			// Verificar disponibilidad general para Estadios
+			if (plazasDisponibles(espectaculo, nuevaFecha) <= 0) {
+				throw new RuntimeException("No hay plazas disponibles en la nueva función del estadio.");
+			}
+
+			// Anular la entrada original
+			boolean canceladaPorUsuario = usuario.cancelarEntrada(originalEntrada.consultarCodigo());
+			if (!canceladaPorUsuario) {
+				throw new RuntimeException("La entrada original no pudo ser cancelada por el usuario.");
+			}
+			espectaculo.anularEntrada(originalEntrada);
+			if (this.entradasVendidas.remove(originalEntrada.consultarCodigo()) == null) {
+				throw new RuntimeException("Error interno: La entrada original no se encontró para su remoción.");
+			}
+
+			// Crear y "vender" la nueva entrada para Estadio
+			Entrada nuevaEntrada = new Entrada(espectaculo, nuevaFecha, sedeNueva, emailComprador);
+
+			usuario.comprarEntrada(nuevaEntrada.consultarCodigo(), nuevaEntrada.consultarFecha());
+			espectaculo.venderEntrada(nuevaEntrada);
+			this.entradasVendidas.put(nuevaEntrada.consultarCodigo(), nuevaEntrada);
+
+			return nuevaEntrada;
+
+		} else if (sedeNueva instanceof Teatro || sedeNueva instanceof Miniestadio) {
+			throw new IllegalArgumentException(
+					"Para cambiar entrada a un Teatro o Miniestadio, use la versión del método que especifica sector y asiento.");
+		} else {
+			throw new RuntimeException(
+					"Tipo de sede no compatible para el cambio de entrada: " + sedeNueva.getClass().getName());
+		}
 	}
 
 	@Override
 	public double costoEntrada(String nombreEspectaculo, String fecha) {
-		// TODO Auto-generated method stub
-		return 0;
+		datoValido(nombreEspectaculo, "nombre del espectáculo");
+		datoValido(fecha, "fecha");
+
+		espectaculoNoRegistrado(nombreEspectaculo);
+		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
+		noHayFuncionEnFecha(nombreEspectaculo, fecha); // Checks if function exists
+
+		return espectaculo.consultarPrecioBase();
 	}
 
 	@Override
 	public double costoEntrada(String nombreEspectaculo, String fecha, String sector) {
-		// TODO Auto-generated method stub
-		return 0;
+		datoValido(nombreEspectaculo, "nombre del espectáculo");
+		datoValido(fecha, "fecha");
+		datoValido(sector, "sector");
+
+		espectaculoNoRegistrado(nombreEspectaculo);
+		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
+		noHayFuncionEnFecha(nombreEspectaculo, fecha);
+
+		Funcion funcion = espectaculo.consultarFuncion(fecha);
+		Sede sede = funcion.getSede(); // Sede object from Funcion
+		double precioBase = espectaculo.consultarPrecioBase();
+
+		if (sede instanceof Estadio) {
+			return precioBase;
+		} else if (sede instanceof Teatro teatro) {
+			String[] sectoresSede = teatro.getSectores();
+			for (int i = 0; i < sectoresSede.length; i++) {
+				if (sectoresSede[i].equalsIgnoreCase(sector)) {
+					int porcentaje = teatro.obtenerIncrementoSector(i);
+					return precioBase * (1 + (porcentaje / 100.0));
+				}
+			}
+			throw new RuntimeException("El sector '" + sector + "' no existe en el teatro '" + sede.getNombre() + "'.");
+		} else if (sede instanceof Miniestadio miniestadio) {
+			String[] sectoresSede = miniestadio.getSectores();
+			for (int i = 0; i < sectoresSede.length; i++) {
+				if (sectoresSede[i].equalsIgnoreCase(sector)) {
+					int porcentaje = miniestadio.obtenerIncrementoSector(i);
+					return precioBase * (1 + (porcentaje / 100.0));
+				}
+			}
+			throw new RuntimeException(
+					"El sector '" + sector + "' no existe en el miniestadio '" + sede.getNombre() + "'.");
+		} else {
+			throw new RuntimeException("Tipo de sede desconocido: " + sede.getClass().getName());
+		}
 	}
 
 	@Override
 	public double totalRecaudado(String nombreEspectaculo) {
-		// TODO Auto-generated method stub
-		return 0;
+		datoValido(nombreEspectaculo, "nombre del espectáculo");
+		espectaculoNoRegistrado(nombreEspectaculo);
+		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
+		Double total = espectaculo.getRecaudacionTotal();
+		return total != null ? total : 0.0;
 	}
 
 	@Override
 	public double totalRecaudadoPorSede(String nombreEspectaculo, String nombreSede) {
-		// TODO Auto-generated method stub
-		return 0;
+		datoValido(nombreEspectaculo, "nombre del espectáculo");
+		datoValido(nombreSede, "nombre de la sede");
+		espectaculoNoRegistrado(nombreEspectaculo);
+		sedeNoRegistrada(nombreSede);
+
+		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
+		HashMap<String, Double> recaudacionesSede = espectaculo.getRecaudacionPorSedeMap();
+		return recaudacionesSede.getOrDefault(nombreSede, 0.0);
 	}
 
 	// -------------------------------------------------------------------------------
@@ -318,30 +517,30 @@ public class Ticketek implements ITicketek {
 		int ocupados = espectaculo.consultarVentasFuncion(fecha);
 		return capacidad - ocupados;
 	}
-	
+
 	private Point calcularFilaAsiento(Sede sede, int numAsiento) {
 		int fila, asiento;
 		fila = 0;
 		asiento = 0;
-		if(sede.getClass() == Teatro.class) {
+		if (sede.getClass() == Teatro.class) {
 			Teatro teatro = (Teatro) sede;
 			int tamanoFila = teatro.obtenerAsientosPorFila();
 			if (numAsiento % tamanoFila == 0) {
-				fila = (numAsiento / tamanoFila) -1;
+				fila = (numAsiento / tamanoFila) - 1;
 				asiento = tamanoFila;
-			}else {
+			} else {
 				fila = numAsiento / tamanoFila;
 				asiento = numAsiento % tamanoFila;
 			}
-			
+
 		}
-		if(sede.getClass() == Miniestadio.class) {
+		if (sede.getClass() == Miniestadio.class) {
 			Miniestadio teatro = (Miniestadio) sede;
 			int tamanoFila = teatro.obtenerAsientosPorFila();
 			if (numAsiento % tamanoFila == 0) {
-				fila = (numAsiento / tamanoFila) -1;
+				fila = (numAsiento / tamanoFila) - 1;
 				asiento = tamanoFila;
-			}else {
+			} else {
 				fila = numAsiento / tamanoFila;
 				asiento = numAsiento % tamanoFila;
 			}
@@ -407,10 +606,11 @@ public class Ticketek implements ITicketek {
 			throw new RuntimeException("¡Ya se realiza una funcion en la fecha ingresada!");
 		}
 	}
-	private void datoValido(String parametro, String nombreParametro) throws RuntimeException{
-		if(parametro == null || parametro.length() == 0) {
+
+	private void datoValido(String parametro, String nombreParametro) throws RuntimeException {
+		if (parametro == null || parametro.length() == 0) {
 			throw new RuntimeException("¡Dato Invalido: " + nombreParametro + "!");
 		}
-		
+
 	}
 }

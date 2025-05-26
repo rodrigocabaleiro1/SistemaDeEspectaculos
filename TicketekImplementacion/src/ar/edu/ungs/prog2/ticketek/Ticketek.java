@@ -166,43 +166,10 @@ public class Ticketek implements ITicketek {
 		StringBuilder resultado = new StringBuilder();
 		for (String fecha : espectaculo.consultarFunciones()) {
 			Funcion funcion = espectaculo.consultarFuncion(fecha);
-			String sedeNombre = funcion.consultarSede();
-			Sede sede = sedes.get(sedeNombre);
-			resultado.append(" - (").append(fecha).append(") ").append(sede.getNombre()).append(" - ");
-
-			if (sede.esEstadio()) {
-				resultado.append(funcion.consultarEntradasVendidas())
-						.append("/")
-						.append(sede.consultarCapacidad())
-						.append("\n");
-			} else if (sede instanceof Teatro teatro) {
-				for (int i = 0; i < teatro.cantidadSectores(); i++) {
-					if (i > 0)
-						resultado.append(" | ");
-					String nombreSector = teatro.consultarSector(i);
-					int vendidos = funcion.consultarEntradasVendidasSector(nombreSector);
-					resultado.append(nombreSector)
-							.append(": ")
-							.append(vendidos)
-							.append("/")
-							.append(teatro.capacidadSector(i));
-				}
-				resultado.append("\n");
-			} else if (sede instanceof Miniestadio mini) {
-				for (int i = 0; i < mini.cantidadSectores(); i++) {
-					if (i > 0)
-						resultado.append(" | ");
-					String nombreSector = mini.consultarSector(i);
-					int vendidos = funcion.consultarEntradasVendidasSector(nombreSector);
-					resultado.append(nombreSector)
-							.append(": ")
-							.append(vendidos)
-							.append("/")
-							.append(mini.capacidadSector(i));
-				}
-				resultado.append("\n");
+			
+				resultado.append(funcion.toString()).append("\n");
 			}
-		}
+		
 
 		return resultado.toString();
 	}

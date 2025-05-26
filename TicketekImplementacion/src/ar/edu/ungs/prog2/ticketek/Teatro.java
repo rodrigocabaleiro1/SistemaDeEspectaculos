@@ -15,6 +15,7 @@ public class Teatro extends Sede {
 	private String[] sectores;
 	private int[] porcentajeAdicional;
 	private int[] capacidadSector; // vamos a asumir que la capacidad del sector son cantidad de filas
+	private int[] asientoInicial; // el nro de asiento en el que inicia cada sector]
 
 	public Teatro(String nombre, String direccion, int capacidadMaxima, int asientosPorFila,
 			String[] sectores, int[] capacidad, int[] porcentajeAdicional) {
@@ -25,6 +26,11 @@ public class Teatro extends Sede {
 		this.sectores = sectores;
 		this.capacidadSector = capacidad;
 		this.porcentajeAdicional = porcentajeAdicional;
+		this.asientoInicial = new int[capacidad.length];
+		this.asientoInicial[0] = 0;
+		for (int x=1; x<sectores.length; x++) {
+			this.asientoInicial[x] = capacidad[x-1];
+		this.asientoInicial[x] += this.asientoInicial[x-1];}
 	}
 
 	public int obtenerIncrementoSector(String sector) {
@@ -76,6 +82,26 @@ public class Teatro extends Sede {
 	public int obtenerAsientosPorFila() {
 		// TODO Auto-generated method stub
 		return this.asientosPorFila;
+	}
+
+	@Override
+	public String consultarNombre() {
+		// TODO Auto-generated method stub
+		return super.nombre;
+	}
+	public int obtenerAsientoAbsoluto(String sector, int asiento){
+		int asientoAb = 0;
+		asientoAb=this.asientoInicial[obtenerIndiceSector(sector)] + asiento;
+		return asientoAb;
+	}
+
+	private int obtenerIndiceSector(String sector) {
+		for(int x = 0; x < 4; x++) {
+			if(this.sectores[x] == sector) {
+				return x;
+			}
+		}
+		throw new RuntimeException("No se ha encontrado el sector");
 	}
 
 }

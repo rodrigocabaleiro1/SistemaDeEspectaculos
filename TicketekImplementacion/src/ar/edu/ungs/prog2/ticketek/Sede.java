@@ -26,4 +26,6 @@ public abstract class Sede {
     public boolean esEstadio() {
         return this instanceof Estadio;
     }
+
+	public abstract String consultarNombre();
 }

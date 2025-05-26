@@ -13,7 +13,7 @@ public class Funcion {
     private String fecha;
     private int entradasVendidas;
     private HashMap<String, Integer> entradasVendidasPorSector;
-    private HashMap<Integer, String> asientosOcupados; // nro asiento / sector
+    private HashMap<Integer, String> asientosOcupados; // nro asiento / sector 
 
     public Funcion(Sede sede, String fecha) {
         this.sede = sede;
@@ -34,7 +34,12 @@ public class Funcion {
     public void venderEntrada(String sector, int asiento) {
         this.entradasVendidas++;
         if (sector != null) {
-            this.entradasVendidasPorSector.put(sector, entradasVendidasPorSector.getOrDefault(sector, 0) + 1);
+      
+        	if(this.entradasVendidasPorSector.containsKey(sector)) {
+            this.entradasVendidasPorSector.put(sector, entradasVendidasPorSector.get(sector) + 1);
+            }else {
+            	this.entradasVendidasPorSector.put(sector, 1);
+            }
         }
         ocuparAsiento(sector, asiento);
     }
@@ -50,14 +55,28 @@ public class Funcion {
     public void anularEntrada() {
         this.entradasVendidas--;
     }
+    
 
     public boolean estaDisponible(String sector, int asiento) {
         // Verifica si ese asiento ya está ocupado
-        return !asientosOcupados.containsKey(asiento);
+    	if (this.sede.getClass() == Teatro.class) {
+    		Teatro teatro = (Teatro) sede;
+    		return !asientosOcupados.containsKey(teatro.obtenerAsientoAbsoluto(sector, asiento));        }
+    	if (this.sede.getClass() == Miniestadio.class) {
+    		Miniestadio miniestadio = (Miniestadio) sede;
+    		return !asientosOcupados.containsKey(miniestadio.obtenerAsientoAbsoluto(sector, asiento));        }
+        return false;
     }
 
     public void ocuparAsiento(String sector, int asiento) {
-        asientosOcupados.put(asiento, sector);
+    	if (this.sede.getClass() == Teatro.class) {
+    		Teatro teatro = (Teatro) sede;
+    		asientosOcupados.put(teatro.obtenerAsientoAbsoluto(sector, asiento), sector);
+        }
+    	if (this.sede.getClass() == Miniestadio.class) {
+    		Miniestadio miniestadio = (Miniestadio) sede;
+    		asientosOcupados.put(miniestadio.obtenerAsientoAbsoluto(sector, asiento), sector);
+        }
     }
 
     public void desocuparAsiento(int asiento) {
@@ -66,6 +85,38 @@ public class Funcion {
 
     public boolean lugarLibre() {
         return false;
+    }
+    @Override
+    public String toString() {
+    	StringBuilder resultado = new StringBuilder();
+    	resultado.append(" - (").append(this.fecha).append(") ").append(this.sede.consultarNombre()).append(" - ");
+    	if(this.sede.getClass() == Estadio.class) {
+    		resultado.append(this.entradasVendidas).append("/").append(this.sede.capacidad);
+    	}
+    	if(this.sede.getClass() == Teatro.class) {
+    		Teatro teatro = (Teatro) this.sede;
+    		for (int x=0; x<teatro.cantidadSectores(); x++) {
+    		resultado.append(teatro.consultarSector(x)).append(": ").append(this.entradasVendidasPorSector.getOrDefault(teatro.consultarNombre(),0))
+    		.append("/").append(teatro.capacidadSector(x));
+    		
+    		if(x<teatro.cantidadSectores()-1) {
+    			resultado.append(" | ");
+    		}
+    		}
+    	}
+    	if(this.sede.getClass() == Miniestadio.class) {
+    		Miniestadio miniestadio = (Miniestadio) this.sede;
+    		for (int x=0; x<miniestadio.cantidadSectores(); x++) {
+    		resultado.append(miniestadio.consultarSector(x)).append(": ").append(this.entradasVendidasPorSector.getOrDefault(miniestadio.consultarNombre(),0))
+    		.append("/").append(miniestadio.capacidadSector(x));
+    		
+    		if(x<miniestadio.cantidadSectores()-1) {
+    			resultado.append(" | ");
+    		}
+    		}
+    	}
+		return resultado.toString();
+    	
     }
 
 }

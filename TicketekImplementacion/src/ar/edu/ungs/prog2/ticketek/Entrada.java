@@ -179,5 +179,12 @@ public class Entrada implements IEntrada {
 	public int getAsiento() {
 		return this.numeroAsiento;
 	}
+	public Sede consultarSede() {
+		return this.ubicacion;
+	}
+	
+	public String consultarSector() {
+		return this.sector;
+	}
 
 }

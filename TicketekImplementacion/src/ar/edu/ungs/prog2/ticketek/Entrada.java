@@ -178,17 +178,9 @@ public class Entrada implements IEntrada {
 		return this.comprador;
 	}
 
-	public void setFecha(String fecha) {
-		this.fecha = fecha;
-	}
+	
 
-	public void setSector(String sector) {
-		this.sector = sector;
-	}
-
-	public void setAsiento(int asiento) {
-		this.numeroAsiento = asiento;
-	}
+	
 
 	public int getAsiento() {
 		return this.numeroAsiento;

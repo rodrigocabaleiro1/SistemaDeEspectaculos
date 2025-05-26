@@ -21,93 +21,143 @@ public class Ticketek implements ITicketek {
 		this.sedes = new HashMap<>();
 		this.entradasVendidas = new HashMap<>();
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public void registrarSede(String nombre, String direccion, int capacidadMaxima) {
-		if (nombre == null || nombre.isEmpty()) {
-			throw new IllegalArgumentException("El nombre no puede estar vacío");
-		}
-		if (direccion == null || direccion.isEmpty()) {
-			throw new IllegalArgumentException("La dirección no puede estar vacía");
-		}
-		if (capacidadMaxima <= 0) {
-			throw new RuntimeException("la capacidad maxima ingresada es invalida");
-		}
+		//------ Comprobaciones -------
+		datoValido(nombre,"nombre");
+		datoValido(direccion,"direccion");
+		datoValido(capacidadMaxima,"capacidadMaxima");
 		yaExisteSede(nombre);
-
+		//------ Comportamiento metodo -------
 		Sede nuevaSede = new Estadio(nombre, direccion, capacidadMaxima);
 		sedes.put(nombre, nuevaSede);
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public void registrarSede(String nombre, String direccion, int capacidadMaxima, int asientosPorFila,
 			String[] sectores, int[] capacidad, int[] porcentajeAdicional) {
+		//------ Comprobaciones -------
 
-		if (nombre == null || nombre.isEmpty()) {
-			throw new IllegalArgumentException("El nombre no puede estar vacío");
-		}
-		if (direccion == null || direccion.isEmpty()) {
-			throw new IllegalArgumentException("La dirección no puede estar vacía");
-		}
+		datoValido(nombre,"nombre");
+		datoValido(direccion,"direccion");
+		datoValido(capacidadMaxima,"capacidadMaxima");
+		datoValido(asientosPorFila,"asientosPorFila");
+		datoValido(sectores,"sectores");
+		datoValido(capacidad,"capacidad");
+		datoValido(porcentajeAdicional,"porcentajeAdicional");
+		yaExisteSede(nombre);
 		if (capacidadMaxima <= 0) {
 			throw new RuntimeException("la capacidad maxima ingresada es invalida");
 		}
-		yaExisteSede(nombre);
+		//------ Comportamiento metodo -------
 
 		Sede nuevaSede = new Teatro(nombre, direccion, capacidadMaxima, asientosPorFila, sectores, capacidad,
 				porcentajeAdicional);
 		sedes.put(nombre, nuevaSede);
-
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public void registrarSede(String nombre, String direccion, int capacidadMaxima, int asientosPorFila,
 			int cantidadPuestos, double precioConsumicion, String[] sectores, int[] capacidad,
 			int[] porcentajeAdicional) {
+		//------ Comprobaciones -------
 
+		datoValido(nombre,"nombre");
+		datoValido(direccion,"direccion");
+		datoValido(capacidadMaxima,"capacidadMaxima");
+		datoValido(asientosPorFila,"asientosPorFila");
+		datoValido(sectores,"sectores");
+		datoValido(capacidad,"capacidad");
+		datoValido(porcentajeAdicional,"porcentajeAdicional");
+		if(precioConsumicion <= 0) {
+			throw new RuntimeException("precioConsumision ingresado es invalida");
+		}
 		yaExisteSede(nombre);
+		//------ Comportamiento metodo -------
 
 		Sede nuevaSede = new Miniestadio(nombre, direccion, capacidadMaxima, asientosPorFila, cantidadPuestos,
 				precioConsumicion, sectores, capacidad, porcentajeAdicional);
 		sedes.put(nombre, nuevaSede);
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public void registrarUsuario(String email, String nombre, String apellido, String contrasenia) {
+		//------ Comprobaciones -------
 
+		datoValido(email,"email");
+		datoValido(nombre,"nombre");
+		datoValido(apellido,"apellido");
+		datoValido(contrasenia,"contrasenia");
 		yaExisteUsuario(email);
+		//------ Comportamiento metodo -------
+
 		Usuario usuario = new Usuario(email, nombre, apellido, contrasenia);
 		usuarios.put(email, usuario);
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public void registrarEspectaculo(String nombre) {
+		//------ Comprobaciones -------
+
+		datoValido(nombre,"nombre");
 		yaExisteEspectaculo(nombre);
+		//------ Comportamiento metodo -------
 
 		Espectaculo espectaculo = new Espectaculo(nombre);
 		espectaculos.put(nombre, espectaculo);
-
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public void agregarFuncion(String nombreEspectaculo, String fecha, String sede, double precioBase) {
+		//------ Comprobaciones -------
+
+		datoValido(nombreEspectaculo,"nombreEspectaculo");
+		datoValido(fecha,"fecha");
+		datoValido(sede,"sede");
+		if(precioBase <= 0) {
+			throw new RuntimeException("precioConsumision ingresado es invalida");
+		}
 		espectaculoNoRegistrado(nombreEspectaculo);
 		sedeNoRegistrada(sede);
 		yaSeRealizaFuncionEnFecha(nombreEspectaculo, fecha);
+		//------ Comportamiento metodo -------
 
 		Sede sedeObj = sedes.get(sede); // <- Obtener el objeto sede
 		Funcion nuevaFuncion = new Funcion(sedeObj, fecha); // <- Pasar el objeto, no el String
 
 		espectaculos.get(nombreEspectaculo).agregarFuncion(nuevaFuncion, fecha, precioBase);
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public List<IEntrada> venderEntrada(String nombreEspectaculo, String fecha, String email, String contrasenia,
 			int cantidadEntradas) {
+		//------ Comprobaciones -------
+
+		datoValido(cantidadEntradas,"cantidadEntradas");
+		datoValido(nombreEspectaculo,"nombreEspectaculo");
+		datoValido(fecha,"fecha");
+		datoValido(email,"email");
+		datoValido(contrasenia,"contrasenia");
 
 		espectaculoNoRegistrado(nombreEspectaculo);
 		noHayFuncionEnFecha(nombreEspectaculo, fecha);
 		iniciarSesionUsuario(email, contrasenia);
+		//------ Comportamiento metodo -------
 
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
 		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
@@ -128,15 +178,24 @@ public class Ticketek implements ITicketek {
 		}
 		return entradas;
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public List<IEntrada> venderEntrada(String nombreEspectaculo, String fecha, String email, String contrasenia,
 			String sector, int[] asientos) {
-		// TODO Auto-generated method stub
+		//------ Comprobaciones -------
 
+		datoValido(nombreEspectaculo,"nombreEspectaculo");
+		datoValido(fecha,"fecha");
+		datoValido(email,"email");
+		datoValido(contrasenia,"contrasenia");
+		datoValido(sector,"sector");
+		datoValido(asientos,"asientos");
 		espectaculoNoRegistrado(nombreEspectaculo);
 		noHayFuncionEnFecha(nombreEspectaculo, fecha);
 		iniciarSesionUsuario(email, contrasenia);
+		//------ Comportamiento metodo -------
 
 		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
 		Usuario usuario = this.usuarios.get(email);
@@ -156,28 +215,42 @@ public class Ticketek implements ITicketek {
 		
 		return entradas;
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public String listarFunciones(String nombreEspectaculo) {
+		//------ Comprobaciones -------
+
+		datoValido(nombreEspectaculo,"nombreEspectaculo");
+		//------ Comportamiento metodo -------
+
 		Espectaculo espectaculo = espectaculos.get(nombreEspectaculo);
 		if (espectaculo == null)
 			return "";
 
 		StringBuilder resultado = new StringBuilder();
-		for (String fecha : espectaculo.consultarFunciones()) {
-			Funcion funcion = espectaculo.consultarFuncion(fecha);
-			
-				resultado.append(funcion.toString()).append("\n");
-			}
-		
+		Iterator<String> iterador = espectaculo.consultarFunciones().iterator();
 
+        while (iterador.hasNext()) {
+            Funcion funcion = espectaculo.consultarFuncion(iterador.next());
+            resultado.append(funcion.toString()).append("\n");
+        }
+        
 		return resultado.toString();
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public List<IEntrada> listarEntradasEspectaculo(String nombreEspectaculo) {
-		// TODO Auto-generated method stub
+		//------ Comprobaciones -------
+
+		datoValido(nombreEspectaculo,"nombreEspectaculo");
 		espectaculoNoRegistrado(nombreEspectaculo);
+		
+		//------ Comportamiento metodo -------
+
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
 		for (String codigo : this.entradasVendidas.keySet()) {
 			String nombreEspectaculoEntrada = this.entradasVendidas.get(codigo).getEspectaculo().consultarNombre();
@@ -191,12 +264,19 @@ public class Ticketek implements ITicketek {
 		}
 		return entradas;
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public List<IEntrada> listarEntradasFuturas(String email, String contrasenia) {
+		//------ Comprobaciones -------
+
 		datoValido(email, "email");
 		datoValido(contrasenia, "contraseña");
 		iniciarSesionUsuario(email, contrasenia);
+		
+		//------ Comportamiento metodo -------
+
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
 		Usuario usuario = this.usuarios.get(email);
 		LinkedList<String> codigosFuturos = usuario.listarEntradasFuturas();
@@ -206,12 +286,19 @@ public class Ticketek implements ITicketek {
 
 		return entradas;
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public List<IEntrada> listarTodasLasEntradasDelUsuario(String email, String contrasenia) {
+		//------ Comprobaciones -------
+
 		datoValido(email, "email");
 		datoValido(contrasenia, "contraseña");
 		iniciarSesionUsuario(email, contrasenia);
+		
+		//------ Comportamiento metodo -------
+
 		List<IEntrada> entradas = new LinkedList<IEntrada>();
 		Usuario usuario = this.usuarios.get(email);
 		LinkedList<String> codigos = usuario.listarEntradasCompradas();
@@ -221,14 +308,20 @@ public class Ticketek implements ITicketek {
 
 		return entradas;
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public boolean anularEntrada(IEntrada entrada, String contrasenia) {
 		// Debe ser en O(1)
+		//------ Comprobaciones -------
+
 		datoValido(contrasenia, "contraseña");
 		Entrada entradaCast = (Entrada) entrada;
 		iniciarSesionUsuario(entradaCast.consultarComprador(), contrasenia);
 		Usuario usuario = this.usuarios.get(entradaCast.consultarComprador());
+		//------ Comportamiento metodo -------
+
 		boolean resultado = usuario.cancelarEntrada(entradaCast.consultarCodigo());
 		if (resultado == true) {
 			Espectaculo espectaculo = entradaCast.getEspectaculo();
@@ -237,6 +330,8 @@ public class Ticketek implements ITicketek {
 
 		return resultado;
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public IEntrada cambiarEntrada(IEntrada entrada, String contrasenia, String nuevaFecha, String nuevoSector,
@@ -334,6 +429,8 @@ public class Ticketek implements ITicketek {
 
 		return nuevaEntrada;
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public IEntrada cambiarEntrada(IEntrada entrada, String contrasenia, String nuevaFecha) {
@@ -401,9 +498,13 @@ public class Ticketek implements ITicketek {
 					"Tipo de sede no compatible para el cambio de entrada: " + sedeNueva.getClass().getName());
 		}
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public double costoEntrada(String nombreEspectaculo, String fecha) {
+		//------ Comprobaciones -------
+
 		datoValido(nombreEspectaculo, "nombre del espectáculo");
 		datoValido(fecha, "fecha");
 
@@ -413,9 +514,13 @@ public class Ticketek implements ITicketek {
 
 		return espectaculo.consultarPrecioBase(fecha);
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public double costoEntrada(String nombreEspectaculo, String fecha, String sector) {
+		//------ Comprobaciones -------
+
 		datoValido(nombreEspectaculo, "nombre del espectáculo");
 		datoValido(fecha, "fecha");
 		datoValido(sector, "sector");
@@ -442,18 +547,26 @@ public class Ticketek implements ITicketek {
 			throw new RuntimeException("Tipo de sede desconocido: " + sede.getClass().getName());
 		}
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public double totalRecaudado(String nombreEspectaculo) {
+		//------ Comprobaciones -------
+
 		datoValido(nombreEspectaculo, "nombre del espectáculo");
 		espectaculoNoRegistrado(nombreEspectaculo);
 		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
 		Double total = espectaculo.recaudacionTotal();
 		return total;
 	}
+	// -------------------------------------------------------------------------------
+	// -------------------------------------------------------------------------------
 
 	@Override
 	public double totalRecaudadoPorSede(String nombreEspectaculo, String nombreSede) {
+		//------ Comprobaciones -------
+
 		datoValido(nombreEspectaculo, "nombre del espectáculo");
 		datoValido(nombreSede, "nombre de la sede");
 		espectaculoNoRegistrado(nombreEspectaculo);
@@ -563,9 +676,29 @@ public class Ticketek implements ITicketek {
 	}
 
 	private void datoValido(String parametro, String nombreParametro) throws RuntimeException {
-		if (parametro == null || parametro.length() == 0) {
+		if (parametro == null || parametro.length() == 0 || parametro.isEmpty()) {
 			throw new RuntimeException("¡Dato Invalido: " + nombreParametro + "!");
 		}
 
+	}
+	private void datoValido(int parametro, String nombreParametro) throws RuntimeException {
+		if (parametro < 0) {
+			throw new RuntimeException("¡Dato Invalido: " + nombreParametro + "!");
+		}
+
+	}
+	private void datoValido(int[] parametro, String nombreParametro) {
+		if (parametro == null || parametro.length == 0) {
+			throw new RuntimeException("¡Dato Invalido: " + nombreParametro + "!");
+		}
+
+		
+	}
+
+	private void datoValido(String[] parametro, String nombreParametro) {
+		if (parametro == null || parametro.length == 0) {
+			throw new RuntimeException("¡Dato Invalido: " + nombreParametro + "!");
+		}
+		
 	}
 }

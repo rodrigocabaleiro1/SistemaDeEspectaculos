@@ -3,7 +3,7 @@ package ar.edu.ungs.prog2.ticketek;
 public interface IEntrada {
 
 	/**
-	 * 10) Calcula y devuelve el precio de la entrada.
+	 * 10) Calcula y devuelve el precio de la entrada.43
 	 * 
 	 * @return
 	 */

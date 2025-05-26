@@ -147,7 +147,7 @@ public class Ticketek implements ITicketek {
 			// falta comprobar que haya plazas suficientes
 
 			Entrada entrada = new Entrada(espectaculo, fecha, sede, sector, calcularFilaAsiento(sede, asientos[i]),
-					email);
+					email, asientos[i]);
 			entradas.add(entrada);
 			usuario.comprarEntrada(entrada.consultarCodigo(), entrada.consultarFecha());
 			espectaculo.venderEntrada(entrada);
@@ -275,7 +275,7 @@ public class Ticketek implements ITicketek {
 		Funcion funcionNueva = espectaculo.consultarFuncion(nuevaFecha);
 		Sede sedeNueva = this.sedes.get(funcionNueva.consultarSede());
 
-		if (!(sedeNueva instanceof Teatro || sedeNueva instanceof Miniestadio)) {
+		if (!(sedeNueva instanceof Teatro) && !(sedeNueva instanceof Miniestadio)) {
 			throw new RuntimeException(
 					"El cambio a un sector y asiento específico solo es válido para Teatros o Miniestadios.");
 		}
@@ -326,7 +326,7 @@ public class Ticketek implements ITicketek {
 		// 6. Crear y "vender" la nueva entrada
 		Point nuevasCoordenadasAsiento = calcularFilaAsiento(sedeNueva, asiento);
 		Entrada nuevaEntrada = new Entrada(espectaculo, nuevaFecha, sedeNueva, nuevoSector, nuevasCoordenadasAsiento,
-				emailComprador);
+				emailComprador, asiento);
 
 		usuario.comprarEntrada(nuevaEntrada.consultarCodigo(), nuevaEntrada.consultarFecha());
 		espectaculo.venderEntrada(nuevaEntrada);

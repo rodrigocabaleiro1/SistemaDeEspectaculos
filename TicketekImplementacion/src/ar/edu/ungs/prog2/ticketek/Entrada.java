@@ -2,6 +2,8 @@ package ar.edu.ungs.prog2.ticketek;
 
 import java.awt.Point;
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Entrada implements IEntrada {
@@ -21,13 +23,13 @@ public class Entrada implements IEntrada {
 		this.espectaculo = espectaculo;
 		this.fecha = fecha;
 		this.ubicacion = ubicacion;
-		this.sector = null;
+		this.sector = "CAMPO";
 		this.codigo = String.valueOf(++codigoGlobal);
 		this.comprador = comprador;
 	}
 
 	public Entrada(Espectaculo espectaculo, String fecha, Sede ubicacion, String sector, Point filaAsiento,
-			String comprador) {
+			String comprador, int asiento) {
 		validarDatosConstructor(comprador, espectaculo, fecha, ubicacion, sector, filaAsiento);
 		this.espectaculo = espectaculo;
 		this.fecha = fecha;
@@ -36,6 +38,7 @@ public class Entrada implements IEntrada {
 		this.codigo = String.valueOf(++codigoGlobal);
 		this.filaAsiento = filaAsiento;
 		this.comprador = comprador;
+		this.numeroAsiento = asiento;
 
 	}
 
@@ -77,23 +80,34 @@ public class Entrada implements IEntrada {
 	@Override
 	public String ubicacion() {
 		if (ubicacionEstadio()) {
-			return this.ubicacion.getNombre();
+			return " - " + this.sector;
 		}
 		StringBuilder ubicacionEntrada = new StringBuilder();
-		ubicacionEntrada.append("- ").append(this.ubicacion.getNombre()).append(" f:")
+		ubicacionEntrada.append(" - ").append(this.ubicacion.getNombre()).append(" f:")
 				.append(this.filaAsiento.x).append(" a:").append(this.filaAsiento.y);
 		return ubicacionEntrada.toString();
 	}
 
 	@Override
 	public String toString() {
+		String p = "";
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy");
+        Date fechaActual = new Date();
+        try {
+			if (formato.parse(this.fecha).before(fechaActual)) {
+				p = " P";
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		StringBuilder sb = new StringBuilder();
-		sb.append("- ").append(codigo);
-		sb.append(" - ").append(espectaculo != null ? espectaculo.consultarNombre() : "N/A");
-		sb.append(" - ").append(fecha);
-		sb.append(" - ").append(ubicacion != null ? ubicacion.getNombre() : "N/A");
+		sb.append("- ").append(this.codigo);
+		sb.append(" - ").append(this.espectaculo.consultarNombre());
+		sb.append(" - ").append(this.fecha).append(p);
+		sb.append(" - ").append(this.ubicacion.getNombre());
 		sb.append(ubicacion());
-		sb.append("");
 		return sb.toString();
 	}
 

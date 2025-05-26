@@ -8,7 +8,7 @@ public class Espectaculo {
 	// private String codigo;
 	private String nombre;
 	private HashMap<String, Funcion> funciones;
-	private double precioBase;
+	private HashMap<String, Double> precioBase;
 	private HashMap<String, Double> recaudacionPorSede; // se nos solicita en O(1)
 	private Double recaudacion; // se nos solicita en O(1)
 
@@ -17,17 +17,19 @@ public class Espectaculo {
 	public Espectaculo(String nombre) {
 		this.nombre = nombre;
 		this.funciones = new HashMap<>();
-		this.precioBase = 0;
+		
 		this.recaudacionPorSede = new HashMap<>();
 		this.recaudacion = 0.0;
+		this.precioBase = new HashMap<>();
+
 	}
 
 	public LinkedList<String> consultarFunciones() {
 		return new LinkedList<>(funciones.keySet());
 	}
 
-	public Double consultarPrecioBase() {
-		return precioBase;
+	public Double consultarPrecioBase(String fechaFuncion) {
+		return this.precioBase.get(fechaFuncion);
 	}
 
 	public boolean fechaLibre(String fecha) {
@@ -36,7 +38,8 @@ public class Espectaculo {
 
 	public void agregarFuncion(Funcion nuevaFuncion, String fecha, double precioBase) {
 		funciones.put(fecha, nuevaFuncion);
-		this.precioBase = precioBase; // preguntar si el precio base esta en funcion o espectaculo
+		this.precioBase.put(fecha,precioBase); // preguntar si el precio base esta en funcion o espectaculo
+		this.recaudacionPorSede.put(nuevaFuncion.consultarSede(), 0.0);
 	}
 
 	public String consultarSede(String fecha) {
@@ -112,7 +115,7 @@ public class Espectaculo {
 	}
 
 	private void existeSede(String sede) {
-		if(this.recaudacionPorSede.containsKey(sede)) {
+		if(!this.recaudacionPorSede.containsKey(sede)) {
 			throw new RuntimeException("La sede ingresada no existe: " + sede);
 		}
 		

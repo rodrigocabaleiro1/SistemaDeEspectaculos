@@ -53,7 +53,7 @@ public class Entrada implements IEntrada {
 	public double precio() { // debe resolverse en O(1)
 		double precio = 0;
 		int sectorIndice;
-		precio += this.espectaculo.consultarPrecioBase();
+		precio += this.espectaculo.consultarPrecioBase(this.fecha);
 		if (this.ubicacion.getClass() == Estadio.class) {
 			return precio;
 		} else {
@@ -71,7 +71,7 @@ public class Entrada implements IEntrada {
 				incrementoSector = ubicacionCasteada.obtenerIncrementoSector(sectorIndice);
 				consumisionLibre = ubicacionCasteada.obtenerPrecioConsumision();
 			}
-			precio += (incrementoSector / 100) * precio + consumisionLibre;
+			precio = precio + (precio/100)*incrementoSector + consumisionLibre;
 
 		}
 		return precio;
@@ -116,7 +116,7 @@ public class Entrada implements IEntrada {
 	private int obetenerIndiceSector(Teatro teatro) {
 		int indice;
 		for (int x = 0; x < 4; x++) {
-			if (teatro.consultarSector(x) == this.sector) {
+			if (teatro.consultarSector(x).equals(this.sector)) {
 				indice = x;
 				return indice;
 			}
@@ -128,7 +128,7 @@ public class Entrada implements IEntrada {
 	private int obetenerIndiceSector(Miniestadio miniestadio) {
 		int indice;
 		for (int x = 0; x < 4; x++) {
-			if (miniestadio.consultarSector(x) == this.sector) {
+			if (miniestadio.consultarSector(x).equals(this.sector)) {
 				indice = x;
 				return indice;
 			}

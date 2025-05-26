@@ -411,7 +411,7 @@ public class Ticketek implements ITicketek {
 		Espectaculo espectaculo = this.espectaculos.get(nombreEspectaculo);
 		noHayFuncionEnFecha(nombreEspectaculo, fecha); // Checks if function exists
 
-		return espectaculo.consultarPrecioBase();
+		return espectaculo.consultarPrecioBase(fecha);
 	}
 
 	@Override
@@ -426,7 +426,7 @@ public class Ticketek implements ITicketek {
 
 		Funcion funcion = espectaculo.consultarFuncion(fecha);
 		Sede sede = this.sedes.get(funcion.consultarSede()); // Sede object from Funcion
-		double precio = espectaculo.consultarPrecioBase();
+		double precio = espectaculo.consultarPrecioBase(fecha);
 
 		if (sede instanceof Teatro teatro) {
 				int porcentaje = teatro.obtenerIncrementoSector(sector);

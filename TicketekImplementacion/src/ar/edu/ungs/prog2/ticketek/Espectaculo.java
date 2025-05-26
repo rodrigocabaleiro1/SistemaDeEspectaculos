@@ -88,18 +88,20 @@ public class Espectaculo {
 	}
 
 	public void anularEntrada(Entrada entrada) {
-		existeFuncion(entrada.consultarFecha());
-		Funcion funcion = this.funciones.get(entrada.consultarFecha());
-		funcion.anularEntrada();
+		existeFuncion(entrada.consultarFecha());	//2op		
+		//consultarFecha devuelve una variable y existeFuncion busca si el Hashmap de Funciones contiene elemento
+		Funcion funcion = this.funciones.get(entrada.consultarFecha());//2
+		funcion.anularEntrada(); //(AF) AF = operaciones de anularEntrada de Funcion
 
-		double precioEntradaAnulada = entrada.precio(); // O(1)
+		double precioEntradaAnulada = entrada.precio(); // O(1) 
+														// 1 + (P) P = precio() de Entrada
 
-		String Sede = funcion.consultarSede();
+		String Sede = funcion.consultarSede();	// 1
 		
-		this.recaudacion -= precioEntradaAnulada;
+		this.recaudacion -= precioEntradaAnulada;	// 2
 		this.recaudacionPorSede.put(Sede,
-				this.recaudacionPorSede.getOrDefault(Sede, 0.0) - precioEntradaAnulada);
-	}
+				this.recaudacionPorSede.getOrDefault(Sede, 0.0) - precioEntradaAnulada); // 4
+	}																//TOTAL 12 + (AF) + (P)
 
 	// Getter para la recaudación total del espectáculo
 	public Double recaudacionTotal() {

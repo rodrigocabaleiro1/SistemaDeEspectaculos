@@ -316,19 +316,20 @@ public class Ticketek implements ITicketek {
 		// Debe ser en O(1)
 		//------ Comprobaciones -------
 
-		datoValido(contrasenia, "contraseña");
-		Entrada entradaCast = (Entrada) entrada;
-		iniciarSesionUsuario(entradaCast.consultarComprador(), contrasenia);
-		Usuario usuario = this.usuarios.get(entradaCast.consultarComprador());
+		datoValido(contrasenia, "contraseña"); 									//(T) T= operaciones de Dato Valido
+		Entrada entradaCast = (Entrada) entrada; 								//2
+		iniciarSesionUsuario(entradaCast.consultarComprador(), contrasenia);	//(S) S = operaciones de IniciarSesionUsuario
+		Usuario usuario = this.usuarios.get(entradaCast.consultarComprador());	//2
 		//------ Comportamiento metodo -------
 
-		boolean resultado = usuario.cancelarEntrada(entradaCast.consultarCodigo());
-		if (resultado == true) {
-			Espectaculo espectaculo = entradaCast.getEspectaculo();
-			espectaculo.anularEntrada(entradaCast);
+		boolean resultado = usuario.cancelarEntrada(entradaCast.consultarCodigo()); //(c) c= cancelarEntrada
+		if (resultado == true) {												// 1
+			Espectaculo espectaculo = entradaCast.getEspectaculo();				//1 + (GE) GE = getEspectaculo()
+			espectaculo.anularEntrada(entradaCast);								// (A) A = anularEntrada [Espectaculo]
 		}
 
-		return resultado;
+		return resultado;														//1
+		//TOTAL							T + S + C + GE + A + 7
 	}
 	// -------------------------------------------------------------------------------
 	// -------------------------------------------------------------------------------
@@ -650,18 +651,20 @@ public class Ticketek implements ITicketek {
 		}
 	} // Evita que se intente operar con un espectáculo inexistente.
 
-	private void usuarioNoRegistrado(String email) throws RuntimeException {
-		if (!this.usuarios.containsKey(email)) {
-			throw new RuntimeException("NO existe un usuario registrado con ese mail.");
+	private void iniciarSesionUsuario(String email, String contrasenia) throws RuntimeException {
+		usuarioNoRegistrado(email);									// 2 (Op de usuarioNoRegistrado)
+		if (!this.usuarios.get(email).iniciarSesion(contrasenia)) {	//1 + (IS) IS = iniciarSesion de clase Usuario
+			throw new RuntimeException("¡Contraseña INVALIDA!");	//1
+		}															//TOTAL 4 + IS
+	}
+																						//  2^
+	private void usuarioNoRegistrado(String email) throws RuntimeException {		//TOTAL  |
+		if (!this.usuarios.containsKey(email)) {										//1	 |
+			throw new RuntimeException("NO existe un usuario registrado con ese mail.");//1
 		}
 	}
 
-	private void iniciarSesionUsuario(String email, String contrasenia) throws RuntimeException {
-		usuarioNoRegistrado(email);
-		if (!this.usuarios.get(email).iniciarSesion(contrasenia)) {
-			throw new RuntimeException("¡Contraseña INVALIDA!");
-		}
-	}
+	
 
 	private void noHayFuncionEnFecha(String nombreEspectaculo, String fecha) throws RuntimeException {
 		if (this.espectaculos.get(nombreEspectaculo).fechaLibre(fecha)) {
@@ -676,9 +679,9 @@ public class Ticketek implements ITicketek {
 	}
 
 	private void datoValido(String parametro, String nombreParametro) throws RuntimeException {
-		if (parametro == null || parametro.length() == 0 || parametro.isEmpty()) {
-			throw new RuntimeException("¡Dato Invalido: " + nombreParametro + "!");
-		}
+		if (parametro == null || parametro.length() == 0 || parametro.isEmpty()) {	// 1 + 1 + 1 + 1 + 1 + 1
+			throw new RuntimeException("¡Dato Invalido: " + nombreParametro + "!");	// 1 + 1 + 1
+		}																			// TOTAL 9 OP
 
 	}
 	private void datoValido(int parametro, String nombreParametro) throws RuntimeException {

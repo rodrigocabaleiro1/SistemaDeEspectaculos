@@ -70,18 +70,18 @@ public class Usuario {
     }
 
     public boolean iniciarSesion(String contraseniaIngresada) {
-        return this.contrasenia.equals(contraseniaIngresada);
+        return this.contrasenia.equals(contraseniaIngresada);	// 1 op
     }
 
 	public boolean cancelarEntrada(String codigo) {
-		entradaComprada(codigo);
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy");
-        Date fechaActual = new Date(); 
+		entradaComprada(codigo);										// 2 op (pregunta si existe codigo en un HashMap)
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy");	//1 + 1
+        Date fechaActual = new Date(); 									//2
 
-            try {
-                Date fechaEntrada = formato.parse(this.entradasCompradas.get(codigo));
-                if(aPosterioraB(fechaActual, fechaEntrada)) {
-                	return false;
+            try {	
+                Date fechaEntrada = formato.parse(this.entradasCompradas.get(codigo)); // 3
+                if(aPosterioraB(fechaActual, fechaEntrada)) {						// 1op	(a.after(b);)
+                	return false;													// 1
                 } else {
                 	this.entradasCompradas.remove(codigo);
                 	return true;
@@ -91,7 +91,7 @@ public class Usuario {
                 System.out.println("Error al convertir la fecha: " + e.getMessage());
             }
             return false;
-	}
+	}																	//TOTAL 11 op
 
 	private void entradaComprada(String codigo) {
 		// TODO Auto-generated method stub

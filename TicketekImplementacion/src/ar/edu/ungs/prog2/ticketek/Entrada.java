@@ -51,31 +51,33 @@ public class Entrada implements IEntrada {
 
 	@Override
 	public double precio() { // debe resolverse en O(1)
-		double precio = 0;
+		double precio = 0;																//1
 		int sectorIndice;
-		precio += this.espectaculo.consultarPrecioBase(this.fecha);
-		if (this.ubicacion.getClass() == Estadio.class) {
-			return precio;
+		precio += this.espectaculo.consultarPrecioBase(this.fecha);						//4
+		//consultarPrecioBase() {return this.precioBase.get(fechaFuncion);}
+
+		if (this.ubicacion.getClass() == Estadio.class) { //No es peor caso
+			return precio;								
 		} else {
 			double consumisionLibre = 0;
 			int incrementoSector = 0;
 
-			if (this.ubicacion.getClass() == Teatro.class) {
+			if (this.ubicacion.getClass() == Teatro.class) { // no es peor caso
 				Teatro ubicacionCasteada = (Teatro) this.ubicacion;
 				sectorIndice = obetenerIndiceSector(ubicacionCasteada);
 				incrementoSector = ubicacionCasteada.obtenerIncrementoSector(sectorIndice);
 
-			} else if (this.ubicacion.getClass() == Miniestadio.class) {
-				Miniestadio ubicacionCasteada = (Miniestadio) this.ubicacion;
-				sectorIndice = obetenerIndiceSector(ubicacionCasteada);
-				incrementoSector = ubicacionCasteada.obtenerIncrementoSector(sectorIndice);
-				consumisionLibre = ubicacionCasteada.obtenerPrecioConsumision();
+			} else if (this.ubicacion.getClass() == Miniestadio.class) { //peor Caso  	3
+				Miniestadio ubicacionCasteada = (Miniestadio) this.ubicacion; //2
+				sectorIndice = obetenerIndiceSector(ubicacionCasteada); // (OIS) (esta tanto en Teatro como Miniestadio)
+				incrementoSector = ubicacionCasteada.obtenerIncrementoSector(sectorIndice); //(INCS)
+				consumisionLibre = ubicacionCasteada.obtenerPrecioConsumision(); // 1 (getter en escencia)
 			}
-			precio = precio + (precio/100)*incrementoSector + consumisionLibre;
+			precio = precio + (precio/100)*incrementoSector + consumisionLibre;	// 5
 
 		}
-		return precio;
-	}
+		return precio;							//1
+	}																			//TOTAL 15 + (OIS) + (INCS)
 
 	@Override
 	public String ubicacion() {
@@ -127,12 +129,12 @@ public class Entrada implements IEntrada {
 
 	private int obetenerIndiceSector(Miniestadio miniestadio) {
 		int indice;
-		for (int x = 0; x < 4; x++) {
-			if (miniestadio.consultarSector(x).equals(this.sector)) {
-				indice = x;
-				return indice;
+		for (int x = 0; x < 4; x++) {	//1  + 5 + 5
+			if (miniestadio.consultarSector(x).equals(this.sector)) { //1*4
+				indice = x;	//1*4
+				return indice;//1
 			}
-		}
+		}//TOTAL 20
 
 		throw new RuntimeException("No se ha encontrado el sector");	}
 

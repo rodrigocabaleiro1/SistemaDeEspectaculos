@@ -153,7 +153,7 @@ public class Ticketek implements ITicketek {
 			espectaculo.venderEntrada(entrada);
 			this.entradasVendidas.put(entrada.consultarCodigo(), entrada);
 		}
-
+		
 		return entradas;
 	}
 

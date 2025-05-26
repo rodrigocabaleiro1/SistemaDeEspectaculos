@@ -33,14 +33,13 @@ public class Funcion {
 
     public void venderEntrada(String sector, int asiento) {
         this.entradasVendidas++;
-        if (sector != null) {
       
         	if(this.entradasVendidasPorSector.containsKey(sector)) {
             this.entradasVendidasPorSector.put(sector, entradasVendidasPorSector.get(sector) + 1);
             }else {
             	this.entradasVendidasPorSector.put(sector, 1);
             }
-        }
+        
         ocuparAsiento(sector, asiento);
     }
 
@@ -96,7 +95,7 @@ public class Funcion {
     	if(this.sede.getClass() == Teatro.class) {
     		Teatro teatro = (Teatro) this.sede;
     		for (int x=0; x<teatro.cantidadSectores(); x++) {
-    		resultado.append(teatro.consultarSector(x)).append(": ").append(this.entradasVendidasPorSector.getOrDefault(teatro.consultarNombre(),0))
+    		resultado.append(teatro.consultarSector(x)).append(": ").append(this.entradasVendidasPorSector.getOrDefault(teatro.consultarSector(x),0))
     		.append("/").append(teatro.capacidadSector(x));
     		
     		if(x<teatro.cantidadSectores()-1) {
@@ -107,7 +106,7 @@ public class Funcion {
     	if(this.sede.getClass() == Miniestadio.class) {
     		Miniestadio miniestadio = (Miniestadio) this.sede;
     		for (int x=0; x<miniestadio.cantidadSectores(); x++) {
-    		resultado.append(miniestadio.consultarSector(x)).append(": ").append(this.entradasVendidasPorSector.getOrDefault(miniestadio.consultarNombre(),0))
+    		resultado.append(miniestadio.consultarSector(x)).append(": ").append(this.entradasVendidasPorSector.getOrDefault(miniestadio.consultarSector(x),0))
     		.append("/").append(miniestadio.capacidadSector(x));
     		
     		if(x<miniestadio.cantidadSectores()-1) {

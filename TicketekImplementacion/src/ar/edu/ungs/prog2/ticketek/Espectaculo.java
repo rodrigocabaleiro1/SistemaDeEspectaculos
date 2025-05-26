@@ -74,12 +74,10 @@ public class Espectaculo {
 		Funcion funcion = this.funciones.get(entrada.consultarFecha());
 		Sede sedeEntrada = entrada.consultarSede();
 		if(sedeEntrada instanceof Estadio) {funcion.venderEntrada();}
-		if(sedeEntrada.getClass() == Teatro.class|| sedeEntrada.getClass() == Miniestadio.class) {
+		if(sedeEntrada instanceof Teatro || sedeEntrada instanceof Miniestadio) {
 			
-			funcion.venderEntrada(entrada.consultarSector(), entrada.getAsiento());}
-		 
- 
- 
+			funcion.venderEntrada(entrada.consultarSector(), entrada.getAsiento());
+			}
 
 		double precioVenta = entrada.precio(); // O(1)
 		String Sede = funcion.consultarSede();

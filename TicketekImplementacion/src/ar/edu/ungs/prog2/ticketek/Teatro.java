@@ -48,9 +48,9 @@ public class Teatro extends Sede {
 	}
 
 	@Override
-	public Double calcularCostoEntrada() {
-		// TODO Auto-generated method stub
-		return null;
+	public Double calcularCostoEntrada(double precioBase , String sector) {
+		int porcentaje = obtenerIncrementoSector(sector);
+		return precioBase * (1 + (porcentaje / 100.0));
 	}
 
 	public int obtenerIncrementoSector(int indice) {
@@ -80,13 +80,11 @@ public class Teatro extends Sede {
 	}
 
 	public int obtenerAsientosPorFila() {
-		// TODO Auto-generated method stub
 		return this.asientosPorFila;
 	}
 
 	@Override
 	public String consultarNombre() {
-		// TODO Auto-generated method stub
 		return super.nombre;
 	}
 	public int obtenerAsientoAbsoluto(String sector, int asiento){

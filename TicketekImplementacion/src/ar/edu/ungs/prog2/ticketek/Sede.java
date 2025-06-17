@@ -15,7 +15,7 @@ public abstract class Sede {
         this.direccion = direccion;
     }
 
-    public abstract Double calcularCostoEntrada();
+    public abstract Double calcularCostoEntrada(double precioBase, String sector);
 
     public abstract int consultarCapacidad();
 

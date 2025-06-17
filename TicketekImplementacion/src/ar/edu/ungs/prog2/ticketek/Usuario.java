@@ -94,7 +94,6 @@ public class Usuario {
 	}																	//TOTAL 11 op
 
 	private void entradaComprada(String codigo) {
-		// TODO Auto-generated method stub
 		if (!this.entradasCompradas.containsKey(codigo)) {
 			throw new RuntimeException("La entrada indicada no ha sido comprada por este usuario");
 		}

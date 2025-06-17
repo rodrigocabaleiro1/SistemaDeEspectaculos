@@ -171,7 +171,6 @@ public class Entrada implements IEntrada {
 	}
 
 	public String consultarFecha() {
-		// TODO Auto-generated method stub
 		return this.fecha;
 	}
 

@@ -44,9 +44,10 @@ public class Miniestadio extends Sede {
 	}
 
 	@Override
-	public Double calcularCostoEntrada() {
-		// TODO Auto-generated method stub
-		return null;
+	public Double calcularCostoEntrada(double precioBase, String sector) {
+		int porcentaje = obtenerIncrementoSector(sector);
+		double precioConsumision = obtenerPrecioConsumision();
+		return precioBase * (1 + (porcentaje / 100.0)) + precioConsumision;
 	}
 
 	public int obtenerIncrementoSector(int indice) {
@@ -89,13 +90,11 @@ public class Miniestadio extends Sede {
 
 	}
 	public int obtenerAsientosPorFila() {
-		// TODO Auto-generated method stub
 		return this.asientosPorFila;
 	}
 
 	@Override
 	public String consultarNombre() {
-		// TODO Auto-generated method stub
 		return super.nombre;
 	}
 	

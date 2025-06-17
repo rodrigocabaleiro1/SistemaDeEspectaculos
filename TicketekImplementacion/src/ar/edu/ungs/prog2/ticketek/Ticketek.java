@@ -534,19 +534,7 @@ public class Ticketek implements ITicketek {
 		Sede sede = this.sedes.get(funcion.consultarSede()); // Sede object from Funcion
 		double precio = espectaculo.consultarPrecioBase(fecha);
 
-		if (sede instanceof Teatro teatro) {
-				int porcentaje = teatro.obtenerIncrementoSector(sector);
-				return precio * (1 + (porcentaje / 100.0));
-
-		} else if (sede instanceof Miniestadio miniestadio) {
-
-			int porcentaje = miniestadio.obtenerIncrementoSector(sector);
-			double precioConsumision = miniestadio.obtenerPrecioConsumision();
-			return precio * (1 + (porcentaje / 100.0)) + precioConsumision;
-
-		} else {
-			throw new RuntimeException("Tipo de sede desconocido: " + sede.getClass().getName());
-		}
+		return sede.calcularCostoEntrada(precio, sector);
 	}
 	// -------------------------------------------------------------------------------
 	// -------------------------------------------------------------------------------

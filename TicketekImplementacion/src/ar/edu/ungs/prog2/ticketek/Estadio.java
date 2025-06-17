@@ -10,14 +10,8 @@ public class Estadio extends Sede {
     }
 
     @Override
-    public Double calcularCostoEntrada() {
-        double costoBase = 1000.0;
-
-        if ("campo".equalsIgnoreCase(sector)) {
-            return costoBase * 1.2;
-        } else {
-            return costoBase;
-        }
+    public Double calcularCostoEntrada(double costoBase, String sector) {
+        return costoBase;
     }
 
     @Override

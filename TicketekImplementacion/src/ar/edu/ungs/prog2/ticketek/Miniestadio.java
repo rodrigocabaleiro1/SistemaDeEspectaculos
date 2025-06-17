@@ -51,6 +51,9 @@ public class Miniestadio extends Sede {
 	}
 
 	public int obtenerIncrementoSector(int indice) {
+		if(indice < 0 || indice > 3) {
+			throw new RuntimeException("El indice ingresado es invalido");
+		}
 		return this.porcentajeAdicional[indice];
 	}
 
@@ -60,6 +63,9 @@ public class Miniestadio extends Sede {
 	}
 
 	public String consultarSector(int x) {
+		if(x < 0 || x > 3) {
+			throw new RuntimeException("El indice ingresado es invalido");
+		}
 		return sectores[x];
 	}
 
@@ -77,6 +83,9 @@ public class Miniestadio extends Sede {
 	}
 
 	public int capacidadSector(int i) {
+		if(i < 0 || i > 3) {
+			throw new RuntimeException("El indice ingresado es invalido");
+		}
 		return capacidadSector[i];
 	}
 

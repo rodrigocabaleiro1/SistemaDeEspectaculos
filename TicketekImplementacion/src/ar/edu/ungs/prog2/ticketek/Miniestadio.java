@@ -133,6 +133,7 @@ public class Miniestadio extends Sede {
     			resultado.append(" | ");
     		}
     		}
+    	resultado.append("\n");
 		return resultado.toString();
     	
 	}

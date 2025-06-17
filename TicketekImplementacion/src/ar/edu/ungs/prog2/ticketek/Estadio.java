@@ -24,6 +24,7 @@ public class Estadio extends Sede {
 		StringBuilder resultado = new StringBuilder();
     	resultado.append(" - ").append(super.nombre).append(" - ").append(super.direccion).append(" - ");
     	resultado.append(this.sector).append(": ").append(super.capacidad);
+    	resultado.append("\n");
 		return resultado.toString();
     	
 	}

@@ -122,6 +122,7 @@ public class Teatro extends Sede {
     			resultado.append(" | ");
     		}
     		}
+    	resultado.append("\n");
 		return resultado.toString();
     	
 	}

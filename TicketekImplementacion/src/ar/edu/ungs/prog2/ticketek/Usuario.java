@@ -106,7 +106,7 @@ public class Usuario {
 @Override	
 	public String toString() {
 		StringBuilder resultado = new StringBuilder();
-    	resultado.append(" - (").append(this.mail).append(") ").append(this.nombre).append(" ").append(this.apellido).append(" - ");
+    	resultado.append(" - (").append(this.mail).append(") ").append(this.nombre).append(" ").append(this.apellido).append(" - \n");
 		return resultado.toString();
     	
 	}

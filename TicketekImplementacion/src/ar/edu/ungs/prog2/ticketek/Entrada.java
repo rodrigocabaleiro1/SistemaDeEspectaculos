@@ -109,7 +109,7 @@ public class Entrada implements IEntrada {
 		sb.append(" - ").append(this.espectaculo.consultarNombre());
 		sb.append(" - ").append(this.fecha).append(p);
 		sb.append(" - ").append(this.ubicacion.getNombre());
-		sb.append(ubicacion());
+		sb.append(ubicacion()).append("\n");
 		return sb.toString();
 	}
 

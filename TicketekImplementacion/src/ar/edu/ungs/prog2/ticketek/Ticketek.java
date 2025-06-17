@@ -699,14 +699,26 @@ public class Ticketek implements ITicketek {
 		StringBuilder resultado = new StringBuilder();
 		resultado.append("Bienvenido al sistema de venta de entradas TICKETEK").append("\n");
     	resultado.append(" - ").append("Espectaculos Registrados: ").append(this.espectaculos.size()).append("\n");
-    	resultado.append(" - ").append("Usuarios Registrados: ").append(this.usuarios.size()).append("\n");
-    	resultado.append(" - ").append("Sedes Registrados: ").append(this.sedes.size()).append("\n");
-    	resultado.append(" - ").append("Entradas Vendidas: ").append(this.entradasVendidas.size()).append("\n");
     	
     	double recaudacion = 0;
     	for(String nombre: this.espectaculos.keySet()) {
-    		recaudacion += totalRecaudado(nombre); 
+    		recaudacion += totalRecaudado(nombre);
+    		resultado.append(this.espectaculos.get(nombre).toString());
     	}
+    	resultado.append(" - ").append("Usuarios Registrados: ").append(this.usuarios.size()).append("\n");
+    	
+    	for(String mail: this.usuarios.keySet()) {
+    		resultado.append(this.usuarios.get(mail).toString());
+    	}
+    	resultado.append(" - ").append("Sedes Registrados: ").append(this.sedes.size()).append("\n");
+    	for(String nombre: this.sedes.keySet()) {
+    		resultado.append(this.sedes.get(nombre).toString());
+    	}
+    	resultado.append(" - ").append("Entradas Vendidas: ").append(this.entradasVendidas.size()).append("\n");
+    	for(String codigo: this.entradasVendidas.keySet()) {
+    		resultado.append(this.entradasVendidas.get(codigo).toString());
+    	}
+    	
     	
     	resultado.append(" - ").append("Total Recaudado: $").append(recaudacion).append("\n");
     	

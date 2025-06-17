@@ -116,6 +116,7 @@ public class Funcion {
     	}
 		return resultado.toString();
     	
-    }
-
+    }// no implemento el equals de Funcion porque es dificil saber si dos funciones son 
+    //la misma con los datos que disponemos (pueden haber dos funciones iguales de distintos espectaculos)
+    //por ende son el mismo objeto si comparten espacio en memoria, ya ponderado por equals de Object
 }

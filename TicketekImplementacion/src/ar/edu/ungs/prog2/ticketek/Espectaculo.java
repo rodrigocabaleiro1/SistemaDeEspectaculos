@@ -120,6 +120,10 @@ public class Espectaculo {
 		}
 		
 	}
+	//-------------------------------------------------------------
+	//Metodos Faltantes en la primera Correccion
+	//-------------------------------------------------------------
+	
 	@Override 
 	public String toString() {
 		StringBuilder resultado = new StringBuilder();
@@ -137,12 +141,10 @@ public class Espectaculo {
 		return resultado.toString();
 	} 
 
-	/*
-	 * public void mapNull(HashMap <String, Funcion> map) throws RuntimeException{
-	 * if(map == null) {
-	 * throw new RuntimeException("No hay funciones");
-	 * }
-	 * }
-	 */
+	public boolean equals(Espectaculo otro) {
+		if (this.nombre == otro.consultarNombre()) {return true;}
+		return false;
+	}
+	
 
 }

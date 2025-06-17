@@ -99,12 +99,26 @@ public class Usuario {
 			throw new RuntimeException("La entrada indicada no ha sido comprada por este usuario");
 		}
 	}
+	
+	//-------------------------------------------------------------
+	//Metodos Faltantes en la primera Correccion
+	//-------------------------------------------------------------
+	
 @Override	
 	public String toString() {
 		StringBuilder resultado = new StringBuilder();
     	resultado.append(" - (").append(this.mail).append(") ").append(this.nombre).append(" ").append(this.apellido).append(" - ");
 		return resultado.toString();
     	
+	}
+	
+	public boolean equals(Usuario otro) {
+		if (this.mail == otro.consultarMail()) {return true;}
+		return false;
+	}
+	
+	public String consultarMail(){
+		return this.mail;
 	}
 
 }

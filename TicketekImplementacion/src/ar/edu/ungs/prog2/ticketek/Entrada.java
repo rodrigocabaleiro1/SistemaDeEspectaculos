@@ -194,5 +194,14 @@ public class Entrada implements IEntrada {
 	public String consultarSector() {
 		return this.sector;
 	}
+	
+	//-------------------------------------------------------------
+	//Metodos Faltantes en la primera Correccion
+	//-------------------------------------------------------------
+	
+	public boolean equals(Entrada otra) {
+		if(this.codigo == otra.consultarCodigo()) {return true;}
+		return false;
+	}
 
 }

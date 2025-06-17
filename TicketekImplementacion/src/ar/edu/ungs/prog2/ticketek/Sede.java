@@ -28,4 +28,11 @@ public abstract class Sede {
     }
 
 	public abstract String consultarNombre();
+	
+	public boolean equals(Sede otra) {
+		if (this.nombre == otra.consultarNombre()) {
+			return true;
+		}
+		return false;
+	}
 }

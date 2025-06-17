@@ -120,6 +120,22 @@ public class Espectaculo {
 		}
 		
 	}
+	@Override 
+	public String toString() {
+		StringBuilder resultado = new StringBuilder();
+		Iterator<String> iterador = consultarFunciones().iterator();
+		
+		resultado.append("- ").append(this.nombre).append("\n");
+		resultado.append("- Recaudacion: - $").append(this.recaudacionTotal()).append("\n");
+		resultado.append("- Funciones").append("\n");
+		
+        while (iterador.hasNext()) {
+            Funcion funcion = consultarFuncion(iterador.next());
+            resultado.append(funcion.toString()).append("\n");
+        }
+        
+		return resultado.toString();
+	} 
 
 	/*
 	 * public void mapNull(HashMap <String, Funcion> map) throws RuntimeException{

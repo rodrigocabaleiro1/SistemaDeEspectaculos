@@ -113,6 +113,21 @@ public class Miniestadio extends Sede {
 		}
 		throw new RuntimeException("No se ha encontrado el sector");
 	}
+	
+	@Override	
+	public String toString() {
+		StringBuilder resultado = new StringBuilder();
+    	resultado.append(" - ").append(super.nombre).append(" - ").append(super.direccion).append(" - ");
+    	for (int x=0; x<cantidadSectores(); x++) {
+    		resultado.append(consultarSector(x)).append(": ").append(capacidadSector(x));
+    		
+    		if(x<cantidadSectores()-1) {
+    			resultado.append(" | ");
+    		}
+    		}
+		return resultado.toString();
+    	
+	}
 
 
 }

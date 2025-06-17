@@ -704,4 +704,15 @@ public class Ticketek implements ITicketek {
 		}
 		
 	}
+	
+	//-----------------------------------------------
+	@Override	
+	public String toString() {
+		StringBuilder resultado = new StringBuilder();
+		resultado.append("Bienvenido al sistema de venta de entradas TICKETEK");
+    	resultado.append(" - ").append("");
+    	
+		return resultado.toString();
+    	
+	}
 }

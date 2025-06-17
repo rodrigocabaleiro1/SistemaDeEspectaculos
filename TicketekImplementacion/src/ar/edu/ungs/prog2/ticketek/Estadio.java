@@ -24,6 +24,15 @@ public class Estadio extends Sede {
     public int consultarCapacidad() {
         return capacidad;
     }
+    
+    @Override	
+	public String toString() {
+		StringBuilder resultado = new StringBuilder();
+    	resultado.append(" - ").append(super.nombre).append(" - ").append(super.direccion).append(" - ");
+    	resultado.append(this.sector).append(": ").append(super.capacidad);
+		return resultado.toString();
+    	
+	}
 
 
     // métodos adicionales para manejar el sector

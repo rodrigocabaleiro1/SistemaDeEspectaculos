@@ -99,5 +99,12 @@ public class Usuario {
 			throw new RuntimeException("La entrada indicada no ha sido comprada por este usuario");
 		}
 	}
+@Override	
+	public String toString() {
+		StringBuilder resultado = new StringBuilder();
+    	resultado.append(" - (").append(this.mail).append(") ").append(this.nombre).append(" ").append(this.apellido).append(" - ");
+		return resultado.toString();
+    	
+	}
 
 }

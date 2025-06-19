@@ -111,9 +111,14 @@ public class Usuario {
     	
 	}
 	
-	public boolean equals(Usuario otro) {
-		if (this.mail == otro.consultarMail()) {return true;}
-		return false;
+	public boolean equals(Object obj) {
+		if (obj instanceof Usuario) {
+			Usuario otro = (Usuario) obj;
+			return this.mail == otro.consultarMail();
+		}
+		else {
+			return false;
+		}
 	}
 	
 	public String consultarMail(){

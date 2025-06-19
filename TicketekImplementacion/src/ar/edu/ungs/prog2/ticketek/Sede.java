@@ -28,11 +28,14 @@ public abstract class Sede {
     }
 
 	public abstract String consultarNombre();
-	
-	public boolean equals(Sede otra) {
-		if (this.nombre == otra.consultarNombre()) {
-			return true;
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Sede) {
+			Sede otro = (Sede) obj;
+			return this.nombre == otro.consultarNombre();
+		
+		} else {
+			return false;
 		}
-		return false;
 	}
 }

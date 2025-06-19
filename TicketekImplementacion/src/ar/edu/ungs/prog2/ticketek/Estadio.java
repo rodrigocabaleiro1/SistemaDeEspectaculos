@@ -28,6 +28,7 @@ public class Estadio extends Sede {
 		return resultado.toString();
     	
 	}
+    
 
 
     // métodos adicionales para manejar el sector

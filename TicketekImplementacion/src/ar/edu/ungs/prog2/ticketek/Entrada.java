@@ -198,9 +198,11 @@ public class Entrada implements IEntrada {
 	//Metodos Faltantes en la primera Correccion
 	//-------------------------------------------------------------
 	
-	public boolean equals(Entrada otra) {
-		if(this.codigo == otra.consultarCodigo()) {return true;}
-		return false;
+	public boolean equals(Object obj) {
+		if(obj instanceof Entrada) {
+			Entrada otra = (Entrada) obj;
+		return this.codigo == otra.consultarCodigo();}
+		else {return false;}
 	}
 
 }

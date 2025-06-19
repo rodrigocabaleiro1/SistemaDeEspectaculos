@@ -140,10 +140,15 @@ public class Espectaculo {
         
 		return resultado.toString();
 	} 
-
-	public boolean equals(Espectaculo otro) {
-		if (this.nombre == otro.consultarNombre()) {return true;}
-		return false;
+@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Espectaculo) {
+			Espectaculo otro = (Espectaculo) obj;
+			return this.nombre == otro.consultarNombre();
+		
+		} else {
+			return false;
+		}
 	}
 	
 

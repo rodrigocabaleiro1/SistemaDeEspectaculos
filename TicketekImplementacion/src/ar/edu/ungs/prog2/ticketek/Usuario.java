@@ -14,12 +14,26 @@ public class Usuario {
     private HashMap<String,String> entradasCompradas; //Hashmap (codigo, fecha)
 
     public Usuario(String mail, String nombre, String apellido, String contrasenia) {
+        if (mail == null || mail.isEmpty()) {
+            throw new IllegalArgumentException("El mail no puede ser nulo ni vacío");
+        }
+        if (nombre == null || nombre.isEmpty()) {
+            throw new IllegalArgumentException("El nombre no puede ser nulo ni vacío");
+        }
+        if (apellido == null || apellido.isEmpty()) {
+            throw new IllegalArgumentException("El apellido no puede ser nulo ni vacío");
+        }
+        if (contrasenia == null || contrasenia.isEmpty()) {
+            throw new IllegalArgumentException("La contraseña no puede ser nula ni vacía");
+        }
+    
         this.mail = mail;
-        this.contrasenia = contrasenia;
         this.nombre = nombre;
         this.apellido = apellido;
+        this.contrasenia = contrasenia;
         this.entradasCompradas = new HashMap<>();
     }
+    
 
     public LinkedList<String> listarEntradasFuturas() {
         LinkedList<String> entradasFuturas = new LinkedList<>();

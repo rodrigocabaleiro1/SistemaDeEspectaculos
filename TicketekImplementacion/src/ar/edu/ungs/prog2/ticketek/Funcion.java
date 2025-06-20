@@ -16,12 +16,20 @@ public class Funcion {
     private HashMap<Integer, String> asientosOcupados; // nro asiento / sector 
 
     public Funcion(Sede sede, String fecha) {
+        if (sede == null) {
+            throw new IllegalArgumentException("La sede no puede ser nula");
+        }
+        if (fecha == null || fecha.isEmpty()) {
+            throw new IllegalArgumentException("La fecha no puede ser nula ni vacía");
+        }
+    
         this.sede = sede;
         this.fecha = fecha;
-        this.entradasVendidasPorSector = new HashMap<>();
         this.entradasVendidas = 0;
+        this.entradasVendidasPorSector = new HashMap<>();
         this.asientosOcupados = new HashMap<>();
     }
+    
 
     public String consultarSede() {
         return this.sede.getNombre();

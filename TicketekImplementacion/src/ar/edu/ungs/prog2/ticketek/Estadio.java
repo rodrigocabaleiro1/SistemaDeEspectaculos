@@ -8,7 +8,7 @@ public class Estadio extends Sede {
         super(nombre, capacidad, direccion);
         this.sector = "campo"; // valor por defecto
     }
-
+    
     @Override
     public Double calcularCostoEntrada(double costoBase, String sector) {
         return costoBase;

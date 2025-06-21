@@ -20,7 +20,7 @@ public class Ticketek implements ITicketek {
 		this.espectaculos = new HashMap<>();
 		this.sedes = new HashMap<>();
 		this.entradasVendidas = new HashMap<>();
-	}
+	}	
 	// -------------------------------------------------------------------------------
 	// -------------------------------------------------------------------------------
 

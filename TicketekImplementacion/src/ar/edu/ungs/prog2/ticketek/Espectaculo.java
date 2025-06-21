@@ -15,14 +15,17 @@ public class Espectaculo {
 	// METODOS ----------------------------------------------
 
 	public Espectaculo(String nombre) {
+		if (nombre == null || nombre.isEmpty()) {
+			throw new IllegalArgumentException("El nombre del espectáculo no puede ser nulo ni vacío");
+		}
+	
 		this.nombre = nombre;
 		this.funciones = new HashMap<>();
-		
+		this.precioBase = new HashMap<>();
 		this.recaudacionPorSede = new HashMap<>();
 		this.recaudacion = 0.0;
-		this.precioBase = new HashMap<>();
-
 	}
+	
 
 	public LinkedList<String> consultarFunciones() {
 		return new LinkedList<>(funciones.keySet());

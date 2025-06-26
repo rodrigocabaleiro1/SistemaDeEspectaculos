@@ -13,7 +13,8 @@ public class Funcion {
     private String fecha;
     private int entradasVendidas;
     private HashMap<String, Integer> entradasVendidasPorSector;
-    private HashMap<Integer, String> asientosOcupados; // nro asiento / sector 
+    private HashMap<Integer, String> asientosOcupados; // nro asiento / sector
+    private Espectaculo espectaculo;
 
     public Funcion(Sede sede, String fecha) {
         if (sede == null) {
@@ -22,14 +23,14 @@ public class Funcion {
         if (fecha == null || fecha.isEmpty()) {
             throw new IllegalArgumentException("La fecha no puede ser nula ni vacía");
         }
-    
+
         this.sede = sede;
         this.fecha = fecha;
         this.entradasVendidas = 0;
         this.entradasVendidasPorSector = new HashMap<>();
         this.asientosOcupados = new HashMap<>();
+        this.espectaculo = espectaculo;
     }
-    
 
     public String consultarSede() {
         return this.sede.getNombre();
@@ -41,13 +42,13 @@ public class Funcion {
 
     public void venderEntrada(String sector, int asiento) {
         this.entradasVendidas++;
-      
-        	if(this.entradasVendidasPorSector.containsKey(sector)) {
+
+        if (this.entradasVendidasPorSector.containsKey(sector)) {
             this.entradasVendidasPorSector.put(sector, entradasVendidasPorSector.get(sector) + 1);
-            }else {
-            	this.entradasVendidasPorSector.put(sector, 1);
-            }
-        
+        } else {
+            this.entradasVendidasPorSector.put(sector, 1);
+        }
+
         ocuparAsiento(sector, asiento);
     }
 
@@ -62,28 +63,15 @@ public class Funcion {
     public void anularEntrada() {
         this.entradasVendidas--;
     }
-    
 
     public boolean estaDisponible(String sector, int asiento) {
-        // Verifica si ese asiento ya está ocupado
-    	if (this.sede.getClass() == Teatro.class) {
-    		Teatro teatro = (Teatro) sede;
-    		return !asientosOcupados.containsKey(teatro.obtenerAsientoAbsoluto(sector, asiento));        }
-    	if (this.sede.getClass() == Miniestadio.class) {
-    		Miniestadio miniestadio = (Miniestadio) sede;
-    		return !asientosOcupados.containsKey(miniestadio.obtenerAsientoAbsoluto(sector, asiento));        }
-        return false;
+        int asientoAbsoluto = this.sede.obtenerAsientoAbsoluto(sector, asiento);
+        return !asientosOcupados.containsKey(asientoAbsoluto);
     }
 
     public void ocuparAsiento(String sector, int asiento) {
-    	if (this.sede.getClass() == Teatro.class) {
-    		Teatro teatro = (Teatro) sede;
-    		asientosOcupados.put(teatro.obtenerAsientoAbsoluto(sector, asiento), sector);
-        }
-    	if (this.sede.getClass() == Miniestadio.class) {
-    		Miniestadio miniestadio = (Miniestadio) sede;
-    		asientosOcupados.put(miniestadio.obtenerAsientoAbsoluto(sector, asiento), sector);
-        }
+        int absoluto = this.sede.obtenerAsientoAbsoluto(sector, asiento);
+        this.asientosOcupados.put(absoluto, sector);
     }
 
     public void desocuparAsiento(int asiento) {
@@ -93,38 +81,41 @@ public class Funcion {
     public boolean lugarLibre() {
         return false;
     }
+
+    public void venderEntradaConAsiento(String sector, int numeroAsiento) {
+        if (asientosOcupados.containsKey(numeroAsiento)) {
+            throw new RuntimeException("El asiento ya está ocupado");
+        }
+        asientosOcupados.put(numeroAsiento, sector);
+        entradasVendidas++;
+    }
+
     @Override
     public String toString() {
-    	StringBuilder resultado = new StringBuilder();
-    	resultado.append(" - (").append(this.fecha).append(") ").append(this.sede.consultarNombre()).append(" - ");
-    	if(this.sede.getClass() == Estadio.class) {
-    		resultado.append(this.entradasVendidas).append("/").append(this.sede.capacidad);
-    	}
-    	if(this.sede.getClass() == Teatro.class) {
-    		Teatro teatro = (Teatro) this.sede;
-    		for (int x=0; x<teatro.cantidadSectores(); x++) {
-    		resultado.append(teatro.consultarSector(x)).append(": ").append(this.entradasVendidasPorSector.getOrDefault(teatro.consultarSector(x),0))
-    		.append("/").append(teatro.capacidadSector(x));
-    		
-    		if(x<teatro.cantidadSectores()-1) {
-    			resultado.append(" | ");
-    		}
-    		}
-    	}
-    	if(this.sede.getClass() == Miniestadio.class) {
-    		Miniestadio miniestadio = (Miniestadio) this.sede;
-    		for (int x=0; x<miniestadio.cantidadSectores(); x++) {
-    		resultado.append(miniestadio.consultarSector(x)).append(": ").append(this.entradasVendidasPorSector.getOrDefault(miniestadio.consultarSector(x),0))
-    		.append("/").append(miniestadio.capacidadSector(x));
-    		
-    		if(x<miniestadio.cantidadSectores()-1) {
-    			resultado.append(" | ");
-    		}
-    		}
-    	}
-		return resultado.toString();
-    	
-    }// no implemento el equals de Funcion porque es dificil saber si dos funciones son 
-    //la misma con los datos que disponemos (pueden haber dos funciones iguales de distintos espectaculos)
-    //por ende son el mismo objeto si comparten espacio en memoria, ya ponderado por equals de Object
+        return " - (" + this.fecha + ") " + this.sede.consultarNombre() + " - " + this.sede.resumenFuncion(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+
+        Funcion otra = (Funcion) obj;
+        return Objects.equals(this.fecha, otra.fecha) &&
+                Objects.equals(this.sede, otra.sede);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.fecha, this.sede);
+    }
+
+    // no implemento el equals de Funcion porque es dificil saber si dos funciones
+    // son
+    // la misma con los datos que disponemos (pueden haber dos funciones iguales de
+    // distintos espectaculos)
+    // por ende son el mismo objeto si comparten espacio en memoria, ya ponderado
+    // por equals de Object
 }

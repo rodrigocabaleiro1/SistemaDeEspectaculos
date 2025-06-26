@@ -51,13 +51,13 @@ public class Entrada implements IEntrada {
 
 	@Override
 	public double precio() { // debe resolverse en O(1)
-		double precio = 0;																//1
+		double precio = 0; // 1
 		int sectorIndice;
-		precio += this.espectaculo.consultarPrecioBase(this.fecha);						//4
-		//consultarPrecioBase() {return this.precioBase.get(fechaFuncion);}
+		precio += this.espectaculo.consultarPrecioBase(this.fecha); // 4
+		// consultarPrecioBase() {return this.precioBase.get(fechaFuncion);}
 
-		if (this.ubicacion.getClass() == Estadio.class) { //No es peor caso
-			return precio;								
+		if (this.ubicacion.getClass() == Estadio.class) { // No es peor caso
+			return precio;
 		} else {
 			double consumisionLibre = 0;
 			int incrementoSector = 0;
@@ -67,17 +67,17 @@ public class Entrada implements IEntrada {
 				sectorIndice = obetenerIndiceSector(ubicacionCasteada);
 				incrementoSector = ubicacionCasteada.obtenerIncrementoSector(sectorIndice);
 
-			} else if (this.ubicacion.getClass() == Miniestadio.class) { //peor Caso  	3
-				Miniestadio ubicacionCasteada = (Miniestadio) this.ubicacion; //2
+			} else if (this.ubicacion.getClass() == Miniestadio.class) { // peor Caso 3
+				Miniestadio ubicacionCasteada = (Miniestadio) this.ubicacion; // 2
 				sectorIndice = obetenerIndiceSector(ubicacionCasteada); // (OIS) (esta tanto en Teatro como Miniestadio)
-				incrementoSector = ubicacionCasteada.obtenerIncrementoSector(sectorIndice); //(INCS)
+				incrementoSector = ubicacionCasteada.obtenerIncrementoSector(sectorIndice); // (INCS)
 				consumisionLibre = ubicacionCasteada.obtenerPrecioConsumision(); // 1 (getter en escencia)
 			}
-			precio = precio + (precio/100)*incrementoSector + consumisionLibre;	// 5
+			precio = precio + (precio / 100) * incrementoSector + consumisionLibre; // 5
 
 		}
-		return precio;							//1
-	}																			//TOTAL 15 + (OIS) + (INCS)
+		return precio; // 1
+	} // TOTAL 15 + (OIS) + (INCS)
 
 	@Override
 	public String ubicacion() {
@@ -94,8 +94,8 @@ public class Entrada implements IEntrada {
 	public String toString() {
 		String p = "";
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy");
-        Date fechaActual = new Date();
-        try {
+		Date fechaActual = new Date();
+		try {
 			if (formato.parse(this.fecha).before(fechaActual)) {
 				p = " P";
 			}
@@ -129,14 +129,15 @@ public class Entrada implements IEntrada {
 
 	private int obetenerIndiceSector(Miniestadio miniestadio) {
 		int indice;
-		for (int x = 0; x < 4; x++) {	//1  + 5 + 5
-			if (miniestadio.consultarSector(x).equals(this.sector)) { //1*4
-				indice = x;	//1*4
-				return indice;//1
+		for (int x = 0; x < 4; x++) { // 1 + 5 + 5
+			if (miniestadio.consultarSector(x).equals(this.sector)) { // 1*4
+				indice = x; // 1*4
+				return indice;// 1
 			}
-		}//TOTAL 20
+		} // TOTAL 20
 
-		throw new RuntimeException("No se ha encontrado el sector");	}
+		throw new RuntimeException("No se ha encontrado el sector");
+	}
 
 	private void validarDatosConstructor(String comprador, Espectaculo espectaculo, String fecha, Sede ubicacion) {
 		if (espectaculo == null || fecha == null || ubicacion == null || comprador == null) {
@@ -179,30 +180,29 @@ public class Entrada implements IEntrada {
 		return this.comprador;
 	}
 
-	
-
-	
-
 	public int getAsiento() {
 		return this.numeroAsiento;
 	}
+
 	public Sede consultarSede() {
 		return this.ubicacion;
 	}
-	
+
 	public String consultarSector() {
 		return this.sector;
 	}
-	
-	//-------------------------------------------------------------
-	//Metodos Faltantes en la primera Correccion
-	//-------------------------------------------------------------
-	
+
+	// -------------------------------------------------------------
+	// Metodos Faltantes en la primera Correccion
+	// -------------------------------------------------------------
+
 	public boolean equals(Object obj) {
-		if(obj instanceof Entrada) {
+		if (obj instanceof Entrada) {
 			Entrada otra = (Entrada) obj;
-		return this.codigo == otra.consultarCodigo();}
-		else {return false;}
+			return this.codigo == otra.consultarCodigo();
+		} else {
+			return false;
+		}
 	}
 
 }

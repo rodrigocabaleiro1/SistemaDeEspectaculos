@@ -124,9 +124,12 @@ public class Miniestadio extends Sede {
 	}
 
 	public int obtenerAsientoAbsoluto(String sector, int asiento) {
-		int asientoAb = 0;
-		asientoAb = this.asientoInicial[obtenerIndiceSector(sector)] + asiento;
-		return asientoAb;
+		int indice = obtenerIndiceSector(sector);
+		if (asiento < 0 || asiento >= capacidadSector[indice]) {
+			throw new IllegalArgumentException(
+					"El número de asiento está fuera del rango válido para el sector " + sector);
+		}
+		return this.asientoInicial[indice] + asiento;
 	}
 
 	private int obtenerIndiceSector(String sector) {
@@ -153,5 +156,24 @@ public class Miniestadio extends Sede {
 		return resultado.toString();
 
 	}
+
+	@Override
+	public void procesarVenta(Funcion funcion, Entrada entrada) {
+		funcion.venderEntrada(entrada.consultarSector(), entrada.getAsiento());
+	}
+
+	@Override
+public String resumenFuncion(Funcion funcion) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < this.cantidadSectores(); i++) {
+        String sector = this.consultarSector(i);
+        int vendidas = funcion.consultarEntradasVendidasSector(sector);
+        sb.append(sector).append(": ")
+          .append(vendidas).append("/").append(this.capacidadSector(i));
+        if (i < this.cantidadSectores() - 1) sb.append(" | ");
+    }
+    return sb.toString();
+}
+
 
 }

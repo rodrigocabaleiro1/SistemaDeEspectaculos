@@ -18,14 +18,13 @@ public class Espectaculo {
 		if (nombre == null || nombre.isEmpty()) {
 			throw new IllegalArgumentException("El nombre del espectáculo no puede ser nulo ni vacío");
 		}
-	
+
 		this.nombre = nombre;
 		this.funciones = new HashMap<>();
 		this.precioBase = new HashMap<>();
 		this.recaudacionPorSede = new HashMap<>();
 		this.recaudacion = 0.0;
 	}
-	
 
 	public LinkedList<String> consultarFunciones() {
 		return new LinkedList<>(funciones.keySet());
@@ -41,7 +40,7 @@ public class Espectaculo {
 
 	public void agregarFuncion(Funcion nuevaFuncion, String fecha, double precioBase) {
 		funciones.put(fecha, nuevaFuncion);
-		this.precioBase.put(fecha,precioBase); // preguntar si el precio base esta en funcion o espectaculo
+		this.precioBase.put(fecha, precioBase); // preguntar si el precio base esta en funcion o espectaculo
 		this.recaudacionPorSede.put(nuevaFuncion.consultarSede(), 0.0);
 	}
 
@@ -76,11 +75,13 @@ public class Espectaculo {
 		existeFuncion(entrada.consultarFecha());
 		Funcion funcion = this.funciones.get(entrada.consultarFecha());
 		Sede sedeEntrada = entrada.consultarSede();
-		if(sedeEntrada instanceof Estadio) {funcion.venderEntrada();}
-		if(sedeEntrada instanceof Teatro || sedeEntrada instanceof Miniestadio) {
-			
+		if (sedeEntrada instanceof Estadio) {
+			funcion.venderEntrada();
+		}
+		if (sedeEntrada instanceof Teatro || sedeEntrada instanceof Miniestadio) {
+
 			funcion.venderEntrada(entrada.consultarSector(), entrada.getAsiento());
-			}
+		}
 
 		double precioVenta = entrada.precio(); // O(1)
 		String Sede = funcion.consultarSede();
@@ -91,20 +92,21 @@ public class Espectaculo {
 	}
 
 	public void anularEntrada(Entrada entrada) {
-		existeFuncion(entrada.consultarFecha());	//2op		
-		//consultarFecha devuelve una variable y existeFuncion busca si el Hashmap de Funciones contiene elemento
-		Funcion funcion = this.funciones.get(entrada.consultarFecha());//2
-		funcion.anularEntrada(); //(AF) AF = operaciones de anularEntrada de Funcion
+		existeFuncion(entrada.consultarFecha()); // 2op
+		// consultarFecha devuelve una variable y existeFuncion busca si el Hashmap de
+		// Funciones contiene elemento
+		Funcion funcion = this.funciones.get(entrada.consultarFecha());// 2
+		funcion.anularEntrada(); // (AF) AF = operaciones de anularEntrada de Funcion
 
-		double precioEntradaAnulada = entrada.precio(); // O(1) 
+		double precioEntradaAnulada = entrada.precio(); // O(1)
 														// 1 + (P) P = precio() de Entrada
 
-		String Sede = funcion.consultarSede();	// 1
-		
-		this.recaudacion -= precioEntradaAnulada;	// 2
+		String Sede = funcion.consultarSede(); // 1
+
+		this.recaudacion -= precioEntradaAnulada; // 2
 		this.recaudacionPorSede.put(Sede,
 				this.recaudacionPorSede.getOrDefault(Sede, 0.0) - precioEntradaAnulada); // 4
-	}																//TOTAL 12 + (AF) + (P)
+	} // TOTAL 12 + (AF) + (P)
 
 	// Getter para la recaudación total del espectáculo
 	public Double recaudacionTotal() {
@@ -118,41 +120,46 @@ public class Espectaculo {
 	}
 
 	private void existeSede(String sede) {
-		if(!this.recaudacionPorSede.containsKey(sede)) {
+		if (!this.recaudacionPorSede.containsKey(sede)) {
 			throw new RuntimeException("La sede ingresada no existe: " + sede);
 		}
-		
+
 	}
-	//-------------------------------------------------------------
-	//Metodos Faltantes en la primera Correccion
-	//-------------------------------------------------------------
-	
-	@Override 
+	// -------------------------------------------------------------
+	// Metodos Faltantes en la primera Correccion
+	// -------------------------------------------------------------
+
+	@Override
 	public String toString() {
 		StringBuilder resultado = new StringBuilder();
 		Iterator<String> iterador = consultarFunciones().iterator();
-		
+
 		resultado.append("- ").append(this.nombre).append("\n");
 		resultado.append("- Recaudacion: - $").append(this.recaudacionTotal()).append("\n");
 		resultado.append("- Funciones").append("\n");
-		
-        while (iterador.hasNext()) {
-            Funcion funcion = consultarFuncion(iterador.next());
-            resultado.append(funcion.toString()).append("\n");
-        }
-        
-		return resultado.toString();
-	} 
-@Override
-	public boolean equals(Object obj) {
-		if(obj instanceof Espectaculo) {
-			Espectaculo otro = (Espectaculo) obj;
-			return this.nombre == otro.consultarNombre();
-		
-		} else {
-			return false;
+
+		while (iterador.hasNext()) {
+			Funcion funcion = consultarFuncion(iterador.next());
+			resultado.append(funcion.toString()).append("\n");
 		}
+
+		return resultado.toString();
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null || getClass() != obj.getClass())
+			return false;
+
+		Espectaculo otro = (Espectaculo) obj;
+		return Objects.equals(nombre, otro.nombre);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(nombre);
+	}
 
 }
